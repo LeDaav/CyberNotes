@@ -7,4 +7,6 @@ This is where I jot down my notes on Cybersecurity, so I can revisit them whenev
 
 It’s mostly a personal space, but feel free to explore! 👨‍💻
 
-![[cyberlogo.png]]
+![cyberlogo 1.png](attachments/cyberlogo.png)
+
+
