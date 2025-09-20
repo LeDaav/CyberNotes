@@ -5,7 +5,8 @@ A `Golden Ticket` attack is a potent method where an attacker forges a Ticket 
 
 #### Attack Steps:
 
-- The attacker extracts the NTLM hash of the KRBTGT account using a `DCSync` attack (alternatively, they can use `NTDS.dit` and `LSASS process dumps` on the Domain Controller). ![SAM account details for krbtgt, including username, account type, security ID, credentials, and Kerberos keys.](https://academy.hackthebox.com/storage/modules/233/image74.png)
+- The attacker extracts the NTLM hash of the KRBTGT account using a `DCSync` attack (alternatively, they can use `NTDS.dit` and `LSASS process dumps` on the Domain Controller). 
+![SAM account details for krbtgt, including username, account type, security ID, credentials, and Kerberos keys.](https://academy.hackthebox.com/storage/modules/233/image74.png)
 - Armed with the `KRBTGT` hash, the attacker forges a TGT for an arbitrary user account, assigning it domain administrator privileges. ![Mimikatz and Command Prompt output showing a golden ticket creation for EvilAdmin in lab.internal.local, with ticket details and cached tickets.](https://academy.hackthebox.com/storage/modules/233/image17.png)
 - The attacker injects the forged TGT in the same manner as a Pass-the-Ticket attack.
 
