@@ -9,7 +9,8 @@
 ## 📌 Syntaxe de base
 
 ```bash
-gobuster [mode] -u <URL> -w <wordlist> [options]
+gobuster [mode] -u <URL> -w <wordlist> [options] 
+```
 
 ---
 
@@ -24,10 +25,7 @@ gobuster [mode] -u <URL> -w <wordlist> [options]
 ---
 
 ## 🌐 Exemple de base
-
 ```bash
-bash
-
 gobuster dir -u http://target.com -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
 ```
 
@@ -64,8 +62,6 @@ _Scan de répertoires/fichiers sur un site web_
 ### Exemple
 
 ```bash
-bash
-
 gobuster dir -u http://target.com -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x php,txt,html -s 200,204,301,302,307,403
 ```
 
@@ -82,8 +78,6 @@ gobuster dir -u http://target.com -w /usr/share/wordlists/dirbuster/directory-li
 ### Exemple
 
 ```bash
-bash
-
 gobuster dns -d example.com -w /usr/share/wordlists/dns/subdomains-top1million-5000.txt
 ```
 
@@ -98,8 +92,6 @@ gobuster dns -d example.com -w /usr/share/wordlists/dns/subdomains-top1million-5
 ### Exemple
 
 ```bash
-bash
-
 gobuster vhost -u http://target.com -w /usr/share/wordlists/vhosts.txt
 ```
 
@@ -132,8 +124,6 @@ gobuster fuzz -u http://target.com/FUZZ -w /usr/share/wordlists/dirbuster/direct
 ### 🔍 Enumération de répertoires
 
 ```bash
-bash
-
 gobuster dir -u http://site.com/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x php,html,txt -t 50
 ```
 
@@ -142,8 +132,6 @@ _Recherche de répertoires/fichiers avec extensions et 50 threads_
 ### 🌐 Enumération de sous-domaines
 
 ```bash
-bash
-
 gobuster dns -d example.com -w /usr/share/wordlists/dns/subdomains-top1million-5000.txt -t 20
 ```
 
@@ -152,8 +140,6 @@ _Recherche de sous-domaines avec 20 threads_
 ### 🏠 Enumération de virtual hosts
 
 ```bash
-bash
-
 gobuster vhost -u http://site.com -w /usr/share/wordlists/vhosts.txt -t 30
 ```
 
@@ -162,7 +148,5 @@ _Recherche de virtual hosts avec 30 threads_
 ### 🧪 Fuzzing générique
 
 ```bash
-bash
-
 gobuster fuzz -u http://site.com/FUZZ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
 ```
