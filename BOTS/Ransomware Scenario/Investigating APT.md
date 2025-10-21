@@ -29,4 +29,25 @@ Ans: Acunetix
 
 ![[attachments/Pasted image 20251021153558.png]]
 
-3. 
+3. What content management system is imreallynotbatman.com likely using? 
+
+hint : URI contains information
+
+
+```sql
+index="botsv1" dest_ip="192.168.250.70" sourcetype="stream:http"
+| stats count by uri
+| sort -count
+```
+
+ANS:Joomla!
+
+
+![[attachments/Pasted image 20251021154904.png]]
+
+4. What IP address is likely attempting a brute force password attack against imreallynotbatman.com
+
+hints:
+- Knowing the dest_ip of the web server
+- the web method will be helpful
+- form_data will have user/password
