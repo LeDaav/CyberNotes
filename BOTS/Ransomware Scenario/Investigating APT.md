@@ -51,3 +51,8 @@ hints:
 - Knowing the dest_ip of the web server
 - the web method will be helpful
 - form_data will have user/password
+
+```sql
+index="botsv1" dest_ip="192.168.250.70" sourcetype="stream:http" http_method=POST form_data="*user*" | stats count by src_ip
+```
+
