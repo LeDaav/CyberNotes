@@ -1,15 +1,16 @@
+# Working with Web Services
 
 Another crucial element in web development is the communication between browsers and web servers. Setting up a web server on a Linux operating system can be done in several ways, with popular options including Nginx, IIS, and Apache. Among these, Apache is one of the most widely used web servers. Think of Apache as the engine that powers your website, ensuring smooth communication between your website and visitors.
 
 We can also think of Apache like the foundation and framework of a house. Just as you can add different rooms or customize features in a house, Apache can be extended with modules, each designed for a specific purpose, whether it's securing communication, rerouting traffic, or dynamically shaping content like an interior designer rearranging rooms to fit your needs.
 
-Apache's true strength lies in its modularity—it can be customized and extended with various modules to perform specific tasks. For example, `mod_ssl` acts like a lockbox, securing the communication between the browser and the web server by encrypting the data. The `mod_proxy` module is like a traffic controller, directing requests to the correct destination, especially useful when setting up proxy servers. Other modules such as `mod_headers` and `mod_rewrite` give you fine control over the data traveling between browser and server, allowing you to modify HTTP headers and URLs on the fly, like adjusting the course of a stream.
+Apache's true strength lies in its modularity—it can be customized and extended with various modules to perform specific tasks. For example, `mod_ssl` acts like a lockbox, securing the communication between the browser and the web server by encrypting the data. The `mod_proxy` module is like a traffic controller, directing requests to the correct destination, especially useful when setting up proxy servers. Other modules such as `mod_headers` and `mod_rewrite` give you fine control over the data traveling between browser and server, allowing you to modify HTTP headers and URLs on the fly, like adjusting the course of a stream.
 
 In addition to handling static web content, Apache also supports the creation of dynamic web pages through server-side scripting languages. Commonly used languages include PHP, Perl, and Ruby, but you can also use others such as Python, JavaScript, Lua, or even .NET. These scripting languages serve as the creative tools behind the scenes, dynamically generating content and ensuring the website is interactive and responsive.
 
 If you haven't already, let's install Apache:
 
-  Working with Web Services
+&#x20; Working with Web Services
 
 ```shell-session
 LeDaav@htb[/htb]$ sudo apt install apache2 -y
@@ -29,9 +30,9 @@ Fetched 95,1 kB in 0s (270 kB/s)
 <SNIP>
 ```
 
-Now, we can start the server using the `apache2ctl,` `systemctl` or `service`commands . There also exists an `apache2` binary, but it’s generally not used to directly to start the server (this is due to the use of environment variables in the default configuration.)
+Now, we can start the server using the `apache2ctl,` `systemctl` or `service`commands . There also exists an `apache2` binary, but it’s generally not used to directly to start the server (this is due to the use of environment variables in the default configuration.)
 
-  Working with Web Services
+&#x20; Working with Web Services
 
 ```shell-session
 
@@ -39,15 +40,15 @@ LeDaav@htb[/htb]$ sudo systemctl start apache2
 
 ```
 
-After Apache has been started, we navigate using our browser to the default page (http://localhost). By default, Apache will serve on HTTP port 80, and your browser will default to this port as well whenever you enter an HTTP [URI](https://clouddocs.f5.com/api/irules/HTTP__uri.html) (unless otherwise specified.)
+After Apache has been started, we navigate using our browser to the default page (http://localhost). By default, Apache will serve on HTTP port 80, and your browser will default to this port as well whenever you enter an HTTP [URI](https://clouddocs.f5.com/api/irules/HTTP__uri.html) (unless otherwise specified.)
 
 ![Apache2 Ubuntu Default Page with 'It works!' message, indicating successful server setup. Instructions suggest replacing the default file before using the server.](https://academy.hackthebox.com/storage/modules/18/apache-default.png)
 
 This is the default page after installation and serves to confirm that the webserver is working correctly.
 
-If you are using the Pwnbox, you might experience an error when attempting to start Apache; this is due to port 80 being occupied by another service. To set an alternate port for our web server, we can edit the `/etc/apache2/ports.conf` file. Here, we have set it to port 8080.
+If you are using the Pwnbox, you might experience an error when attempting to start Apache; this is due to port 80 being occupied by another service. To set an alternate port for our web server, we can edit the `/etc/apache2/ports.conf` file. Here, we have set it to port 8080.
 
-  Working with Web Services
+&#x20; Working with Web Services
 
 ```shell-session
   GNU nano 2.9.3                                             /etc/apache2/ports.conf                                     
@@ -70,9 +71,9 @@ Listen 443
 ^X Exit        ^R Read File   ^\ Replace     ^U Uncut Text  ^T To Spell    ^_ Go To Line  M-E Redo
 ```
 
-We can now restart Apache and instead browse to `http://localhost:8080`, or could use a command line tool such as `curl` to verify:
+We can now restart Apache and instead browse to `http://localhost:8080`, or could use a command line tool such as `curl` to verify:
 
-  Working with Web Services
+&#x20; Working with Web Services
 
 ```shell-session
 
@@ -96,13 +97,13 @@ For example, we could write a simple bash script that downloads a webpage and ex
 
 However, since our primary goal right now is to get familiar with Linux, you'll have the opportunity to see, build, and use such scripts in other modules. For now, let's focus on how we can interact and communicate with a web server using curl and wget.
 
----
+***
 
-## CURL
+### CURL
 
-`cURL` is a tool that allows us to transfer files from the shell over protocols like `HTTP`, `HTTPS`, `FTP`, `SFTP`, `FTPS`, or `SCP`, and in general, gives us the possibility to control and test websites remotely via command line. Besides the remote servers' content, we can also view individual requests to look at the client's and server's communication. Usually, `cURL` is already installed on most Linux systems. This is another critical reason to familiarize ourselves with this tool, as it can make some processes much easier later on.
+`cURL` is a tool that allows us to transfer files from the shell over protocols like `HTTP`, `HTTPS`, `FTP`, `SFTP`, `FTPS`, or `SCP`, and in general, gives us the possibility to control and test websites remotely via command line. Besides the remote servers' content, we can also view individual requests to look at the client's and server's communication. Usually, `cURL` is already installed on most Linux systems. This is another critical reason to familiarize ourselves with this tool, as it can make some processes much easier later on.
 
-  Working with Web Services
+&#x20; Working with Web Services
 
 ```shell-session
 LeDaav@htb[/htb]$ curl http://localhost
@@ -121,15 +122,15 @@ LeDaav@htb[/htb]$ curl http://localhost
 ...SNIP...
 ```
 
-In the title tag, we can see that it is the same text as from our browser. This allows us to inspect the source code of the website and get information from it. More specifically, `curl` returns the website’s page source as STDOUT. As opposed to viewing a website with a browser, which renders the HTML, CSS, and Javascript to create visual, aesthetic websites. Nevertheless, we will come back to this in another module.
+In the title tag, we can see that it is the same text as from our browser. This allows us to inspect the source code of the website and get information from it. More specifically, `curl` returns the website’s page source as STDOUT. As opposed to viewing a website with a browser, which renders the HTML, CSS, and Javascript to create visual, aesthetic websites. Nevertheless, we will come back to this in another module.
 
----
+***
 
-## Wget
+### Wget
 
-An alternative to curl is the tool `wget`. With this tool, we can download files from FTP or HTTP servers directly from the terminal, and it serves as a solid download manager. If we use wget in the same way, the difference to curl is that the website content is downloaded and stored locally, as shown in the following example.
+An alternative to curl is the tool `wget`. With this tool, we can download files from FTP or HTTP servers directly from the terminal, and it serves as a solid download manager. If we use wget in the same way, the difference to curl is that the website content is downloaded and stored locally, as shown in the following example.
 
-  Working with Web Services
+&#x20; Working with Web Services
 
 ```shell-session
 LeDaav@htb[/htb]$ wget http://localhost
@@ -146,13 +147,13 @@ index.html                 100%[=======================================>]  10,66
 2020-05-15 17:43:52 (33,0 MB/s) - ‘index.html’ saved [10918/10918]
 ```
 
----
+***
 
-## Python 3
+### Python 3
 
 Another option that is often used when it comes to data transfer is the use of Python 3. In this case, the web server's root directory is where the command is executed to start the server. For this example, we are in a directory where WordPress is installed and contains a "readme.html." Now, let us start the Python 3 web server and see if we can access it using the browser.
 
-  Working with Web Services
+&#x20; Working with Web Services
 
 ```shell-session
 LeDaav@htb[/htb]$ python3 -m http.server
@@ -164,7 +165,7 @@ Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 
 We can see what requests were made if we now look at our Python 3 web server's events.
 
-  Working with Web Services
+&#x20; Working with Web Services
 
 ```shell-session
 LeDaav@htb[/htb]$ python3 -m http.server

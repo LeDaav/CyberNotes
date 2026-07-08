@@ -1,15 +1,16 @@
+# Service and Process Management
 
 Services, also known as daemons, are fundamental components of a Linux system that run silently in the background "without direct user interaction". They perform crucial tasks that keep the system operational and provide additional functionalities. Generally, services can be categorized into two types:
 
-#### System Services
+**System Services**
 
 These are internal services required during system startup. They perform essential hardware-related tasks and initialize system components necessary for the operating system to function properly. These are like the engine and transmission systems. They start when you turn the ignition key and are essential for the car to run. Without them, the car wouldn't move.
 
-#### User-Installed Services
+**User-Installed Services**
 
 These services are added by users and typically include server applications and other background processes that provide specific features or capabilities. These types of services are like the car's air conditioning or GPS navigation system. While not critical for the car to operate, they enhance functionality and provide additional features based on the driver's preferences.
 
-Daemons are often identified by the letter `d` at the end of their program names, such as `sshd` (SSH daemon) or `systemd`. Just as a car relies on both its core components and optional features to provide a complete experience, a Linux system utilizes both system and user-installed services to function efficiently and meet user needs.
+Daemons are often identified by the letter `d` at the end of their program names, such as `sshd` (SSH daemon) or `systemd`. Just as a car relies on both its core components and optional features to provide a complete experience, a Linux system utilizes both system and user-installed services to function efficiently and meet user needs.
 
 In general, there are just a few goals that we have when we deal with a service or a process:
 
@@ -19,15 +20,15 @@ In general, there are just a few goals that we have when we deal with a service 
 4. Enable/Disable a service/process on boot
 5. Find a service/process
 
-Most modern Linux distributions have adopted `systemd` as their initialization system (init system). It is the first process that starts during the boot process and is assigned the Process ID (`PID`). All processes in a Linux system are assigned a `PID` and can be viewed under the `/proc/` directory, which contains information about each process. Processes may also have a Parent Process ID (`PPID`), indicating that they were started by another process (the parent), making them child processes.
+Most modern Linux distributions have adopted `systemd` as their initialization system (init system). It is the first process that starts during the boot process and is assigned the Process ID (`PID`). All processes in a Linux system are assigned a `PID` and can be viewed under the `/proc/` directory, which contains information about each process. Processes may also have a Parent Process ID (`PPID`), indicating that they were started by another process (the parent), making them child processes.
 
----
+***
 
-## Systemctl
+### Systemctl
 
-After installing `OpenSSH` on our VM, we can start the service with the following command.
+After installing `OpenSSH` on our VM, we can start the service with the following command.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ systemctl start ssh
@@ -35,7 +36,7 @@ LeDaav@htb[/htb]$ systemctl start ssh
 
 After we have started the service, we can now check if it runs without errors.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ systemctl status ssh
@@ -60,7 +61,7 @@ Mai 14 15:08:31 inlane sshd[846]: Server listening on :: port 22.
 
 To add OpenSSH to the SysV script to tell the system to run this service after startup, we can link it with the following command:
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ systemctl enable ssh
@@ -69,9 +70,9 @@ Synchronizing state of ssh.service with SysV service script with /lib/systemd/sy
 Executing: /lib/systemd/systemd-sysv-install enable ssh
 ```
 
-Once we reboot the system, the OpenSSH server will automatically run. We can check this with a tool called `ps`.
+Once we reboot the system, the OpenSSH server will automatically run. We can check this with a tool called `ps`.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ ps -aux | grep ssh
@@ -79,9 +80,9 @@ LeDaav@htb[/htb]$ ps -aux | grep ssh
 root       846  0.0  0.1  72300  5660 ?        Ss   Mai14   0:00 /usr/sbin/sshd -D
 ```
 
-We can also use `systemctl` to list all services.
+We can also use `systemctl` to list all services.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ systemctl list-units --type=service
@@ -96,9 +97,9 @@ avahi-daemon.service                                       loaded active running
 bolt.service                                               loaded active running Thunderbolt system service
 ```
 
-It is quite possible that the services do not start due to an error. To see the problem, we can use the tool `journalctl` to view the logs.
+It is quite possible that the services do not start due to an error. To see the problem, we can use the tool `journalctl` to view the logs.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ journalctl -u ssh.service --no-pager
@@ -118,20 +119,20 @@ Mai 14 02:04:49 inlane systemd[1]: Stopped OpenBSD Secure Shell server.
 -- Reboot --
 ```
 
----
+***
 
-## Kill a Process
+### Kill a Process
 
 A process can be in the following states:
 
-- Running
-- Waiting (waiting for an event or system resource)
-- Stopped
-- Zombie (stopped but still has an entry in the process table).
+* Running
+* Waiting (waiting for an event or system resource)
+* Stopped
+* Zombie (stopped but still has an entry in the process table).
 
-Processes can be controlled using `kill`, `pkill`, `pgrep`, and `killall`. To interact with a process, we must send a signal to it. We can view all signals with the following command:
+Processes can be controlled using `kill`, `pkill`, `pgrep`, and `killall`. To interact with a process, we must send a signal to it. We can view all signals with the following command:
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ kill -l
@@ -153,31 +154,31 @@ LeDaav@htb[/htb]$ kill -l
 
 The most commonly used signals are:
 
-|**Signal**|**Description**|
-|---|---|
-|`1`|`SIGHUP` - This is sent to a process when the terminal that controls it is closed.|
-|`2`|`SIGINT` - Sent when a user presses `[Ctrl] + C` in the controlling terminal to interrupt a process.|
-|`3`|`SIGQUIT` - Sent when a user presses `[Ctrl] + D` to quit.|
-|`9`|`SIGKILL` - Immediately kill a process with no clean-up operations.|
-|`15`|`SIGTERM` - Program termination.|
-|`19`|`SIGSTOP` - Stop the program. It cannot be handled anymore.|
-|`20`|`SIGTSTP` - Sent when a user presses `[Ctrl] + Z` to request for a service to suspend. The user can handle it afterward.|
+| **Signal** | **Description**                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `1`        | `SIGHUP` - This is sent to a process when the terminal that controls it is closed.                                       |
+| `2`        | `SIGINT` - Sent when a user presses `[Ctrl] + C` in the controlling terminal to interrupt a process.                     |
+| `3`        | `SIGQUIT` - Sent when a user presses `[Ctrl] + D` to quit.                                                               |
+| `9`        | `SIGKILL` - Immediately kill a process with no clean-up operations.                                                      |
+| `15`       | `SIGTERM` - Program termination.                                                                                         |
+| `19`       | `SIGSTOP` - Stop the program. It cannot be handled anymore.                                                              |
+| `20`       | `SIGTSTP` - Sent when a user presses `[Ctrl] + Z` to request for a service to suspend. The user can handle it afterward. |
 
 For example, if a program were to freeze, we could force to kill it with the following command:
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ kill 9 <PID> 
 ```
 
----
+***
 
-## Background a Process
+### Background a Process
 
-Sometimes it will be necessary to put the scan or process we just started in the background to continue using the current session to interact with the system or start other processes. As we have already seen, we can do this with the shortcut `[Ctrl + Z]`. As mentioned above, we send the `SIGTSTP` signal to the kernel, which suspends the process.
+Sometimes it will be necessary to put the scan or process we just started in the background to continue using the current session to interact with the system or start other processes. As we have already seen, we can do this with the shortcut `[Ctrl + Z]`. As mentioned above, we send the `SIGTSTP` signal to the kernel, which suspends the process.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ ping -c 10 www.hackthebox.eu
@@ -189,7 +190,7 @@ LeDaav@htb[/htb]$ vim tmpfile
 
 Now all background processes can be displayed with the following command.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ jobs
@@ -198,9 +199,9 @@ LeDaav@htb[/htb]$ jobs
 [2]+  Stopped                 vim tmpfile
 ```
 
-The `[Ctrl] + Z` shortcut suspends the processes, and they will not be executed further. To keep it running in the background, we have to enter the command `bg` to put the process in the background.
+The `[Ctrl] + Z` shortcut suspends the processes, and they will not be executed further. To keep it running in the background, we have to enter the command `bg` to put the process in the background.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ bg
@@ -215,7 +216,7 @@ LeDaav@htb[/htb]$
 
 Another option is to automatically set the process with an AND sign (`&`) at the end of the command.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ ping -c 10 www.hackthebox.eu &
@@ -226,7 +227,7 @@ PING www.hackthebox.eu (172.67.1.1) 56(84) bytes of data.
 
 Once the process finishes, we will see the results.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ 
@@ -238,13 +239,13 @@ LeDaav@htb[/htb]$
 [1]+  Exit 1                  ping -c 10 www.hackthebox.eu
 ```
 
----
+***
 
-## Foreground a Process
+### Foreground a Process
 
-After that, we can use the `jobs` command to list all background processes. Backgrounded processes do not require user interaction, and we can use the same shell session without waiting until the process finishes first. Once the scan or process finishes its work, we will get notified by the terminal that the process is finished.
+After that, we can use the `jobs` command to list all background processes. Backgrounded processes do not require user interaction, and we can use the same shell session without waiting until the process finishes first. Once the scan or process finishes its work, we will get notified by the terminal that the process is finished.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ jobs
@@ -252,9 +253,9 @@ LeDaav@htb[/htb]$ jobs
 [1]+  Running                 ping -c 10 www.hackthebox.eu &
 ```
 
-If we want to get the background process into the foreground and interact with it again, we can use the `fg <ID>` command.
+If we want to get the background process into the foreground and interact with it again, we can use the `fg <ID>` command.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ fg 1
@@ -264,19 +265,19 @@ ping -c 10 www.hackthebox.eu
 10 packets transmitted, 0 received, 100% packet loss, time 9206ms
 ```
 
----
+***
 
-## Execute Multiple Commands
+### Execute Multiple Commands
 
 There are three possibilities to run several commands, one after the other. These are separated by:
 
-- Semicolon (`;`)
-- Double `ampersand` characters (`&&`)
-- Pipes (`|`)
+* Semicolon (`;`)
+* Double `ampersand` characters (`&&`)
+* Pipes (`|`)
 
 The difference between them lies in the previous processes' treatment and depends on whether the previous process was completed successfully or with errors. The semicolon (`;`) is a command separator and executes the commands by ignoring previous commands' results and errors.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ echo '1'; echo '2'; echo '3'
@@ -286,9 +287,9 @@ LeDaav@htb[/htb]$ echo '1'; echo '2'; echo '3'
 3
 ```
 
-For example, if we execute the same command but replace it in second place, the command `ls` with a file that does not exist, we get an error, and the third command will be executed nevertheless.
+For example, if we execute the same command but replace it in second place, the command `ls` with a file that does not exist, we get an error, and the third command will be executed nevertheless.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ echo '1'; ls MISSING_FILE; echo '3'
@@ -300,7 +301,7 @@ ls: cannot access 'MISSING_FILE': No such file or directory
 
 However, it looks different if we use the double AND characters (`&&`) to run the commands one after the other. If there is an error in one of the commands, the following ones will not be executed anymore, and the whole process will be stopped.
 
-  Service and Process Management
+&#x20; Service and Process Management
 
 ```shell-session
 LeDaav@htb[/htb]$ echo '1' && ls MISSING_FILE && echo '3'

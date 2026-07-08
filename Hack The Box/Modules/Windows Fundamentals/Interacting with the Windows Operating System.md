@@ -1,33 +1,32 @@
-
-#### Graphical User Interface
+# Graphical User Interface
 
 The concept of a graphical user interface (GUI) was introduced in the late 1970s by the Xerox Palo Alto research laboratory. It was added to Apple and Microsoft operating systems to address usability concerns for everyday users that would likely have difficulty navigating the command line. Most casual Windows computer users do not ever need to interact with the operating system via the command line. As the name alludes to, a GUI provides users with an interactive point and click interface for interacting with the operating system and installed applications and services.
 
 The introduction of the GUI opened up widespread appeal and access to computers across many demographics since users would be able to interact with their computer without having to memorize commands or know any programming language. Systems administrators commonly use GUI-based systems for administering Active Directory, configuring IIS, or interacting with databases.
 
----
+***
 
-## Remote Desktop Protocol (RDP)
+**Remote Desktop Protocol (RDP)**
 
-[RDP](https://support.microsoft.com/en-us/help/186607/understanding-the-remote-desktop-protocol-rdp) is a proprietary Microsoft protocol which allows a user to connect to a remote system over a network connection and obtain a graphical user interface. The user connects using RDP client software to a target system running RDP server software. RDP uses port 3389 to open a dedicated network channel for sending data back and forth. When connecting via RDP, a user can access the GUI as if they were actually sitting at the computer and logging into it locally. RDP is often used by system administrators to administer remote systems quickly. It can also allow users to access their work computers when traveling or working from home after connecting to a Virtual Private Network (VPN).
+[RDP](https://support.microsoft.com/en-us/help/186607/understanding-the-remote-desktop-protocol-rdp) is a proprietary Microsoft protocol which allows a user to connect to a remote system over a network connection and obtain a graphical user interface. The user connects using RDP client software to a target system running RDP server software. RDP uses port 3389 to open a dedicated network channel for sending data back and forth. When connecting via RDP, a user can access the GUI as if they were actually sitting at the computer and logging into it locally. RDP is often used by system administrators to administer remote systems quickly. It can also allow users to access their work computers when traveling or working from home after connecting to a Virtual Private Network (VPN).
 
----
+***
 
-## Windows Command Line
+**Windows Command Line**
 
 Command-line interfaces give users greater control over their systems and can be used to perform a wide variety of day-to-day, administrative, and troubleshooting tasks. It can be leveraged to introduce automation to perform certain tasks quickly (such as adding many users to a domain at once). In Windows operating systems, the main two ways to interact with the system from the command line are via the Command Prompt (CMD) and PowerShell.
 
-The [Windows Command Reference](https://download.microsoft.com/download/5/8/9/58911986-D4AD-4695-BF63-F734CD4DF8F2/ws-commands.pdf) from Microsoft is a comprehensive A-Z command reference which includes an overview, usage examples, and command syntax for most Windows commands, and familiarity with it is recommended.
+The [Windows Command Reference](https://download.microsoft.com/download/5/8/9/58911986-D4AD-4695-BF63-F734CD4DF8F2/ws-commands.pdf) from Microsoft is a comprehensive A-Z command reference which includes an overview, usage examples, and command syntax for most Windows commands, and familiarity with it is recommended.
 
----
+***
 
-## CMD
+**CMD**
 
-The Command Prompt (cmd.exe) is used to enter and execute commands. A user can enter one-off commands such as `ipconfig` to view IP address information or perform more advanced tasks such as setting up scheduled tasks or creating scripts and batch files. The Command prompt can be opened from the Start Menu, by typing `cmd` in the run dialogue box, or by directly launching the binary from `C:\Windows\system32\cmd.exe`.
+The Command Prompt (cmd.exe) is used to enter and execute commands. A user can enter one-off commands such as `ipconfig` to view IP address information or perform more advanced tasks such as setting up scheduled tasks or creating scripts and batch files. The Command prompt can be opened from the Start Menu, by typing `cmd` in the run dialogue box, or by directly launching the binary from `C:\Windows\system32\cmd.exe`.
 
-After launching `cmd.exe` we can type `help` to see a listing of available commands.
+After launching `cmd.exe` we can type `help` to see a listing of available commands.
 
-  Interacting with the Windows Operating System
+&#x20; Interacting with the Windows Operating System
 
 ```cmd-session
 C:\htb> help
@@ -55,9 +54,9 @@ COPY           Copies one or more files to another location.
 <SNIP>
 ```
 
-For more information about a specific command, we can type `help <command name>`.
+For more information about a specific command, we can type `help <command name>`.
 
-  Interacting with the Windows Operating System
+&#x20; Interacting with the Windows Operating System
 
 ```cmd-session
 C:\htb> help schtasks
@@ -97,9 +96,9 @@ Examples:
     SCHTASKS /ShowSid /?
 ```
 
-Note that certain commands have their own help menus, which can be accessed by typing `<command> /?`. For example, information about the `ipconfig` command can be seen below.
+Note that certain commands have their own help menus, which can be accessed by typing `<command> /?`. For example, information about the `ipconfig` command can be seen below.
 
-  Interacting with the Windows Operating System
+&#x20; Interacting with the Windows Operating System
 
 ```cmd-session
 C:\htb> ipconfig /?
@@ -136,29 +135,29 @@ where
 <SNIP
 ```
 
----
+***
 
-## PowerShell
+**PowerShell**
 
 Windows PowerShell is a command shell that was designed by Microsoft to be more geared towards system administrators. PowerShell, like the Windows command line, has an interactive command prompt as well as a powerful scripting environment. PowerShell is built on top of the .NET Framework, which is used for building and running applications on Windows. This makes it a very powerful tool for interfacing directly with the operating system.
 
 Like the command prompt, PowerShell gives us direct access to the file system, and we run the majority of the same commands that we can within a cmd shell.
 
----
+***
 
-## Cmdlets
+**Cmdlets**
 
-PowerShell utilizes [cmdlets](https://docs.microsoft.com/en-us/powershell/scripting/developer/cmdlet/cmdlet-overview?view=powershell-7), which are small single-function tools built into the shell. There are more than 100 core cmdlets, and many additional ones have been written, or we can author our own to perform more complex tasks. PowerShell also supports both simple and complex scripts used for system administration tasks, automation, and more.
+PowerShell utilizes [cmdlets](https://docs.microsoft.com/en-us/powershell/scripting/developer/cmdlet/cmdlet-overview?view=powershell-7), which are small single-function tools built into the shell. There are more than 100 core cmdlets, and many additional ones have been written, or we can author our own to perform more complex tasks. PowerShell also supports both simple and complex scripts used for system administration tasks, automation, and more.
 
-Cmdlets are in the form of `Verb-Noun`. For example, the command `Get-ChildItem` can be used to list our current directory. Cmdlets also take arguments or flags. We can type `Get-ChildItem -` and hit the tab key to iterate through the arguments. A command such as `Get-ChildItem -Recurse` will show us the contents of our current working directory and all subdirectories. Another example would be `Get-ChildItem -Path C:\Users\Administrator\Documents` to get the contents of another directory. Finally, we can combine arguments such as this to list all subdirectories' contents within another directory recursively: `Get-ChildItem -Path C:\Users\Administrator\Downloads -Recurse`.
+Cmdlets are in the form of `Verb-Noun`. For example, the command `Get-ChildItem` can be used to list our current directory. Cmdlets also take arguments or flags. We can type `Get-ChildItem -` and hit the tab key to iterate through the arguments. A command such as `Get-ChildItem -Recurse` will show us the contents of our current working directory and all subdirectories. Another example would be `Get-ChildItem -Path C:\Users\Administrator\Documents` to get the contents of another directory. Finally, we can combine arguments such as this to list all subdirectories' contents within another directory recursively: `Get-ChildItem -Path C:\Users\Administrator\Downloads -Recurse`.
 
----
+***
 
-## Aliases
+**Aliases**
 
-Many cmdlets in PowerShell also have aliases. For example, the aliases for the cmdlet `Set-Location`, to change directories, is either `cd` or `sl`. Meanwhile, the aliases for `Get-ChildItem` are `ls` and `gci`. We can view all available aliases by typing `Get-Alias`.
+Many cmdlets in PowerShell also have aliases. For example, the aliases for the cmdlet `Set-Location`, to change directories, is either `cd` or `sl`. Meanwhile, the aliases for `Get-ChildItem` are `ls` and `gci`. We can view all available aliases by typing `Get-Alias`.
 
-  Interacting with the Windows Operating System
+&#x20; Interacting with the Windows Operating System
 
 ```powershell-session
 PS C:\htb> get-alias
@@ -180,9 +179,9 @@ Alias           cli -> Clear-Item
 Alias           clp -> Clear-ItemProperty
 ```
 
-We can also set up our own aliases with `New-Alias` and get the alias for any cmdlet with `Get-Alias -Name`.
+We can also set up our own aliases with `New-Alias` and get the alias for any cmdlet with `Get-Alias -Name`.
 
-  Interacting with the Windows Operating System
+&#x20; Interacting with the Windows Operating System
 
 ```powershell-session
 PS C:\htb> New-Alias -Name "Show-Files" Get-ChildItem
@@ -193,9 +192,9 @@ CommandType     Name                                               Version    So
 Alias           Show-Files
 ```
 
-PowerShell has a help system for cmdlets, functions, scripts, and concepts. This is not installed by default, but we can either run the `Get-Help <cmdlet-name> -Online` command to open the online help for a cmdlet or function in our web browser. We can type `Update-Help` to download and install help files locally.
+PowerShell has a help system for cmdlets, functions, scripts, and concepts. This is not installed by default, but we can either run the `Get-Help <cmdlet-name> -Online` command to open the online help for a cmdlet or function in our web browser. We can type `Update-Help` to download and install help files locally.
 
-  Interacting with the Windows Operating System
+&#x20; Interacting with the Windows Operating System
 
 ```powershell-session
 PS C:\htb> help
@@ -234,9 +233,9 @@ LONG DESCRIPTION
 <SNIP>
 ```
 
-Typing a command such as `Get-Help Get-AppPackage` will return just the partial help unless the Help files are installed.
+Typing a command such as `Get-Help Get-AppPackage` will return just the partial help unless the Help files are installed.
 
-  Interacting with the Windows Operating System
+&#x20; Interacting with the Windows Operating System
 
 ```powershell-session
 PS C:\htb>  Get-Help Get-AppPackage
@@ -259,15 +258,15 @@ REMARKS
         -- To download and install Help files for the module that includes this cmdlet, use Update-Help.
 ```
 
----
+***
 
-## Running Scripts
+**Running Scripts**
 
 The PowerShell ISE (Integrated Scripting Environment) allows users to write PowerShell scripts on the fly. It also has an autocomplete/lookup function for PowerShell commands. The PowerShell ISE allows us to write and run scripts in the same console, which allows for quick debugging.
 
 We can run PowerShell scripts in a variety of ways. If we know the functions, we can run the script either locally or after loading into memory with a download cradle like the below example.
 
-  Interacting with the Windows Operating System
+&#x20; Interacting with the Windows Operating System
 
 ```powershell-session
 PS C:\htb> .\PowerView.ps1;Get-LocalGroup |fl
@@ -299,9 +298,9 @@ PrincipalSource : Local
 <SNIP>
 ```
 
-One common way to work with a script in PowerShell is to import it so that all functions are then available within our current PowerShell console session: `Import-Module .\PowerView.ps1`. We can then either start a command and cycle through the options or type `Get-Module` to list all loaded modules and their associated commands.
+One common way to work with a script in PowerShell is to import it so that all functions are then available within our current PowerShell console session: `Import-Module .\PowerView.ps1`. We can then either start a command and cycle through the options or type `Get-Module` to list all loaded modules and their associated commands.
 
-  Interacting with the Windows Operating System
+&#x20; Interacting with the Windows Operating System
 
 ```powershell-session
 PS C:\htb> Get-Module | select Name,ExportedCommands | fl
@@ -329,25 +328,25 @@ ExportedCommands : {[Get-PSReadLineKeyHandler, Get-PSReadLineKeyHandler], [Get-P
                    [Set-PSReadLineKeyHandler, Set-PSReadLineKeyHandler]...}
 ```
 
----
+***
 
-## Execution Policy
+**Execution Policy**
 
-Sometimes we will find that we are unable to run scripts on a system. This is due to a security feature called the `execution policy`, which attempts to prevent the execution of malicious scripts. The possible policies are:
+Sometimes we will find that we are unable to run scripts on a system. This is due to a security feature called the `execution policy`, which attempts to prevent the execution of malicious scripts. The possible policies are:
 
-|**Policy**|**Description**|
-|---|---|
-|`AllSigned`|All scripts can run, but a trusted publisher must sign scripts and configuration files. This includes both remote and local scripts. We receive a prompt before running scripts signed by publishers that we have not yet listed as either trusted or untrusted.|
-|`Bypass`|No scripts or configuration files are blocked, and the user receives no warnings or prompts.|
-|`Default`|This sets the default execution policy, `Restricted` for Windows desktop machines and `RemoteSigned` for Windows servers.|
-|`RemoteSigned`|Scripts can run but requires a digital signature on scripts that are downloaded from the internet. Digital signatures are not required for scripts that are written locally.|
-|`Restricted`|This allows individual commands but does not allow scripts to be run. All script file types, including configuration files (`.ps1xml`), module script files (`.psm1`), and PowerShell profiles (`.ps1`) are blocked.|
-|`Undefined`|No execution policy is set for the current scope. If the execution policy for ALL scopes is set to undefined, then the default execution policy of `Restricted` will be used.|
-|`Unrestricted`|This is the default execution policy for non-Windows computers, and it cannot be changed. This policy allows for unsigned scripts to be run but warns the user before running scripts that are not from the local intranet zone.|
+| **Policy**     | **Description**                                                                                                                                                                                                                                                  |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AllSigned`    | All scripts can run, but a trusted publisher must sign scripts and configuration files. This includes both remote and local scripts. We receive a prompt before running scripts signed by publishers that we have not yet listed as either trusted or untrusted. |
+| `Bypass`       | No scripts or configuration files are blocked, and the user receives no warnings or prompts.                                                                                                                                                                     |
+| `Default`      | This sets the default execution policy, `Restricted` for Windows desktop machines and `RemoteSigned` for Windows servers.                                                                                                                                        |
+| `RemoteSigned` | Scripts can run but requires a digital signature on scripts that are downloaded from the internet. Digital signatures are not required for scripts that are written locally.                                                                                     |
+| `Restricted`   | This allows individual commands but does not allow scripts to be run. All script file types, including configuration files (`.ps1xml`), module script files (`.psm1`), and PowerShell profiles (`.ps1`) are blocked.                                             |
+| `Undefined`    | No execution policy is set for the current scope. If the execution policy for ALL scopes is set to undefined, then the default execution policy of `Restricted` will be used.                                                                                    |
+| `Unrestricted` | This is the default execution policy for non-Windows computers, and it cannot be changed. This policy allows for unsigned scripts to be run but warns the user before running scripts that are not from the local intranet zone.                                 |
 
 Below is an example of the current execution policy for all scopes.
 
-  Interacting with the Windows Operating System
+&#x20; Interacting with the Windows Operating System
 
 ```powershell-session
 PS C:\htb> Get-ExecutionPolicy -List
@@ -365,7 +364,7 @@ The execution policy is not meant to be a security control that restricts user a
 
 Below is an example of changing the execution policy for the current process (session).
 
-  Interacting with the Windows Operating System
+&#x20; Interacting with the Windows Operating System
 
 ```powershell-session
 PS C:\htb> Set-ExecutionPolicy Bypass -Scope Process
@@ -379,7 +378,7 @@ https:/go.microsoft.com/fwlink/?LinkID=135170. Do you want to change the executi
 
 We can now see that the execution policy has been changed.
 
-  Interacting with the Windows Operating System
+&#x20; Interacting with the Windows Operating System
 
 ```powershell-session
 PS C:\htb>  Get-ExecutionPolicy -List

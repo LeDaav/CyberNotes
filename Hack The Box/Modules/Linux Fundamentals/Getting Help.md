@@ -1,11 +1,12 @@
+# Getting Help
 
 Having established a solid foundation in Linux's structure, its various distributions, and the purpose of the shell, we're now prepared to put this knowledge into action. It's time to dive in, using commands directly in the terminal, as well as learning how to seek help when we encounter unfamiliar ones.
 
 We will always stumble across tools whose optional parameters we do not know from memory or tools we have never seen before. Therefore it is vital to know how we can help ourselves to get familiar with those tools. The first two ways are the man pages and the help functions. It is always a good idea to familiarize ourselves with the tool we want to try first. We will also learn some possible tricks with some of the tools that we thought were not possible. In the man pages, we will find the detailed manuals with detailed explanations.
 
-#### First Command:
+**First Command:**
 
-  Getting Help
+&#x20; Getting Help
 
 ```shell-session
 LeDaav@htb[/htb]$ ls
@@ -14,27 +15,27 @@ cacert.der  Documents  Music     Public     Videos
 Desktop     Downloads  Pictures  Templates
 ```
 
-The `ls` command in Linux and Unix systems is used to list the files and directories within the current folder or any specified directory, allowing you to see what's inside and manage files more effectively. Like most Linux commands, `ls` comes with additional options and features that help you filter or format the output to display exactly what you want. To discover which options a tool or command offers, there are several ways to get help. One such method is using the `man` command, which displays the manual pages for commands and provides detailed information about their usage.
+The `ls` command in Linux and Unix systems is used to list the files and directories within the current folder or any specified directory, allowing you to see what's inside and manage files more effectively. Like most Linux commands, `ls` comes with additional options and features that help you filter or format the output to display exactly what you want. To discover which options a tool or command offers, there are several ways to get help. One such method is using the `man` command, which displays the manual pages for commands and provides detailed information about their usage.
 
-#### Syntax:
+**Syntax:**
 
-  Getting Help
+&#x20; Getting Help
 
 ```shell-session
 LeDaav@htb[/htb]$ man <tool>
 ```
 
-Let us have a look at an example and get help for the `ls` command:
+Let us have a look at an example and get help for the `ls` command:
 
-#### Example:
+**Example:**
 
-  Getting Help
+&#x20; Getting Help
 
 ```shell-session
 LeDaav@htb[/htb]$ man ls
 ```
 
-  Getting Help
+&#x20; Getting Help
 
 ```shell-session
 LS(1)                            User Commands                           LS(1)
@@ -65,17 +66,17 @@ DESCRIPTION
 
 After looking at some examples, we can also quickly look at the optional parameters without browsing through the complete documentation. We have several ways to do that.
 
-#### Syntax:
+**Syntax:**
 
-  Getting Help
+&#x20; Getting Help
 
 ```shell-session
 LeDaav@htb[/htb]$ <tool> --help
 ```
 
-#### Example:
+**Example:**
 
-  Getting Help
+&#x20; Getting Help
 
 ```shell-session
 LeDaav@htb[/htb]$ ls --help
@@ -102,19 +103,19 @@ Mandatory arguments to long options are mandatory for short options too.
 <SNIP>
 ```
 
-Some tools or commands like `curl` provide a short version of help by using `-h` instead of `--help`:
+Some tools or commands like `curl` provide a short version of help by using `-h` instead of `--help`:
 
-#### Syntax:
+**Syntax:**
 
-  Getting Help
+&#x20; Getting Help
 
 ```shell-session
 LeDaav@htb[/htb]$ <tool> -h
 ```
 
-#### Example:
+**Example:**
 
-  Getting Help
+&#x20; Getting Help
 
 ```shell-session
 LeDaav@htb[/htb]$ curl -h
@@ -130,19 +131,19 @@ Usage: curl [options...] <url>
 <SNIP>
 ```
 
-As we can see, the results from each other do not differ in this example. Another tool that can be useful in the beginning is `apropos`. Each manual page has a short description available within it. This tool searches the descriptions for instances of a given keyword.
+As we can see, the results from each other do not differ in this example. Another tool that can be useful in the beginning is `apropos`. Each manual page has a short description available within it. This tool searches the descriptions for instances of a given keyword.
 
-#### Syntax:
+**Syntax:**
 
-  Getting Help
+&#x20; Getting Help
 
 ```shell-session
 LeDaav@htb[/htb]$ apropos <keyword>
 ```
 
-#### Example:
+**Example:**
 
-  Getting Help
+&#x20; Getting Help
 
 ```shell-session
 LeDaav@htb[/htb]$ apropos sudo
@@ -157,6 +158,6 @@ sudoreplay (8)       - replay sudo session logs
 visudo (8)           - edit the sudoers file
 ```
 
-Another useful resource to get help if we have issues to understand a long command is: [https://explainshell.com/](https://explainshell.com/)
+Another useful resource to get help if we have issues to understand a long command is: [https://explainshell.com/](https://explainshell.com/)
 
 Next, we'll be covering a large number of commands, many of which may be new to you. However, you now know how to seek help with any command you’re unfamiliar with, or unsure about its options. Also, we highly encourage you to explore your curiosity, taking as much time as needed to tinker and experiment with the tools presented. It will always be time well spent.

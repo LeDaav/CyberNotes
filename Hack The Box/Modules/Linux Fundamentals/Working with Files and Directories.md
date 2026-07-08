@@ -1,61 +1,62 @@
+# Working with Files and Directories
 
-The primary difference between working with files in Linux, as opposed to Windows, lies in how we access and manage those files. In Windows, we typically use graphical tools like Explorer to find, open, and edit files. However, in Linux, the terminal offers a powerful alternative where files can be accessed and edited directly using commands. This method is not only faster, but also more efficient, as it allows you to edit files interactively without even needing editors like `vim` or `nano`.
+The primary difference between working with files in Linux, as opposed to Windows, lies in how we access and manage those files. In Windows, we typically use graphical tools like Explorer to find, open, and edit files. However, in Linux, the terminal offers a powerful alternative where files can be accessed and edited directly using commands. This method is not only faster, but also more efficient, as it allows you to edit files interactively without even needing editors like `vim` or `nano`.
 
 The terminal's efficiency stems from its ability to access files with just a few commands, and it allows you to modify files selectively using regular expressions (`regex`). Additionally, you can run multiple commands at once, redirecting output to files and automating batch editing tasks, which is a major time-saver when working with numerous files simultaneously. This command-line approach streamlines workflow, making it an invaluable tool for tasks that would be more time-consuming through a graphical interface.
 
 Next, we will explore working with files and directories to effectively manage the content on our operating system.
 
----
+***
 
-## Create, Move, and Copy
+### Create, Move, and Copy
 
 Let us begin by learning how to perform key operations like creating, renaming, moving, copying, and deleting files. Before we execute the following commands, we first need to SSH into the target (using the connection instructions at the bottom of the section). Now, let's say we want to create a new file or directory. The syntax for this is the following:
 
-#### Syntax - touch
+**Syntax - touch**
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ touch <name>
 ```
 
-#### Syntax - mkdir
+**Syntax - mkdir**
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ mkdir <name>
 ```
 
-In the next example, we will create a file called `info.txt` and a directory called `Storage`. To create these, we follow the commands and their syntax as shown above.
+In the next example, we will create a file called `info.txt` and a directory called `Storage`. To create these, we follow the commands and their syntax as shown above.
 
-#### Create an Empty File
+**Create an Empty File**
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ touch info.txt
 ```
 
-#### Create a Directory
+**Create a Directory**
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ mkdir Storage
 ```
 
-When organizing your system, you may need to create multiple directories within other directories. Manually running the `mkdir` command for each one would be time-consuming. Fortunately, the mkdir command has the `-p` (parents) option, which allows you to create parent directories automatically.
+When organizing your system, you may need to create multiple directories within other directories. Manually running the `mkdir` command for each one would be time-consuming. Fortunately, the mkdir command has the `-p` (parents) option, which allows you to create parent directories automatically.
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ mkdir -p Storage/local/user/documents
 ```
 
-We can look at the whole structure after creating the parent directories with the tool `tree`.
+We can look at the whole structure after creating the parent directories with the tool `tree`.
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ tree .
@@ -72,15 +73,15 @@ LeDaav@htb[/htb]$ tree .
 
 You can create files directly within specific directories by specifying the path where the file should be stored, and you can use the single dot (`.`) to indicate that you want to start from the current directory. This is a convenient way to work within your current location, without needing to type the full path. Therefore, the command for creating another empty file looks like this:
 
-#### Create userinfo.txt
+**Create userinfo.txt**
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ touch ./Storage/local/user/userinfo.txt
 ```
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ tree .
@@ -96,45 +97,45 @@ LeDaav@htb[/htb]$ tree .
 4 directories, 2 files
 ```
 
-With the command `mv`, we can move and also rename files and directories. The syntax for this looks like this:
+With the command `mv`, we can move and also rename files and directories. The syntax for this looks like this:
 
-#### Syntax - mv
+**Syntax - mv**
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ mv <file/directory> <renamed file/directory>
 ```
 
-First, let us rename the file `info.txt` to `information.txt` and then move it to the directory `Storage`.
+First, let us rename the file `info.txt` to `information.txt` and then move it to the directory `Storage`.
 
-#### Rename File
+**Rename File**
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ mv info.txt information.txt
 ```
 
-Now let us create a file named `readme.txt` in the current directory and then copy the files `information.txt` and `readme.txt` into the `Storage/` directory.
+Now let us create a file named `readme.txt` in the current directory and then copy the files `information.txt` and `readme.txt` into the `Storage/` directory.
 
-#### Create readme.txt
+**Create readme.txt**
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ touch readme.txt
 ```
 
-#### Move Files to Specific Directory
+**Move Files to Specific Directory**
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ mv information.txt readme.txt Storage/
 ```
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ tree .
@@ -151,19 +152,19 @@ LeDaav@htb[/htb]$ tree .
 4 directories, 3 files
 ```
 
-Let us assume we want to have the `readme.txt` in the `local/` directory. Then we can copy them there with the paths specified.
+Let us assume we want to have the `readme.txt` in the `local/` directory. Then we can copy them there with the paths specified.
 
-#### Copy readme.txt
+**Copy readme.txt**
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ cp Storage/readme.txt Storage/local/
 ```
 
-Now we can check if the file is thereby using the tool `tree` again.
+Now we can check if the file is thereby using the tool `tree` again.
 
-  Working with Files and Directories
+&#x20; Working with Files and Directories
 
 ```shell-session
 LeDaav@htb[/htb]$ tree .
@@ -185,6 +186,6 @@ In addition to basic file management commands, there are many other powerful way
 
 We will explore and discuss these methods in greater detail in later sections. As you become familiar with these techniques, you will gain more flexibility in how you create, edit, and manage files on your system.
 
-##### Optional Exercise:
+**Optional Exercise:**
 
 Use the tools we’ve already learned to figure out how to delete files and directories. Keep in mind that online research is a valuable part of the learning process—it’s not cheating. You’re not being tested right now, but rather building your knowledge. Searching for solutions online can expose you to different approaches and alternative methods, giving you a broader understanding of how things work and helping you discover the most efficient ways to solve problems.

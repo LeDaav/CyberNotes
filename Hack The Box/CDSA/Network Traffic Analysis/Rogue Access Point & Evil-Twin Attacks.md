@@ -1,3 +1,4 @@
+# Rogue Access Point & Evil-Twin Attacks
 
 Addressing rogue access points and evil-twin attacks can seem like a gargantuan task due to their often elusive nature. Nevertheless, with the appropriate strategies in place, these illegitimate access points can be detected and managed effectively. In the realm of malevolent access points, rogue and evil-twin attacks invariably surface as significant concerns.
 
@@ -5,9 +6,9 @@ Addressing rogue access points and evil-twin attacks can seem like a gargantuan 
 
 A rogue access point primarily serves as a tool to circumvent perimeter controls in place. An adversary might install such an access point to sidestep network controls and segmentation barriers, which could, in many cases, take the form of hotspots or tethered connections. These rogue points have even been known to infiltrate air-gapped networks. Their primary function is to provide unauthorized access to restricted sections of a network. The critical point to remember here is that rogue access points are directly connected to the network.
 
----
+***
 
-## Evil-Twin
+### Evil-Twin
 
 An evil-twin on the other hand is spun up by an attacker for many other different purposes. The key here, is that in most cases these access points are not connected to our network. Instead, they are standalone access points, which might have a web server or something else to act as a man-in-the-middle for wireless clients.
 
@@ -15,11 +16,11 @@ An evil-twin on the other hand is spun up by an attacker for many other differen
 
 Attackers might set these up to harvest wireless or domain passwords among other pieces of information. Commonly, these attacks might also encompass a hostile portal attack.
 
-## Airodump-ng Detection
+### Airodump-ng Detection
 
 Right away, we could utilize the ESSID filter for Airodump-ng to detect Evil-Twin style access points.
 
-  Rogue Access Point & Evil-Twin Attacks
+&#x20; Rogue Access Point & Evil-Twin Attacks
 
 ```shell-session
 LeDaav@htb[/htb]$ sudo airodump-ng -c 4 --essid HTB-Wireless wlan0 -w raw
@@ -36,11 +37,11 @@ We might also want to be vigilant about deauthentication attempts, which could s
 
 To conclusively ascertain whether this is an anomaly or an Airodump-ng error, we can commence our traffic analysis efforts (`rogueap.cap`). To filter for beacon frames, we could use the following.
 
-- `(wlan.fc.type == 00) and (wlan.fc.type_subtype == 8)`
+* `(wlan.fc.type == 00) and (wlan.fc.type_subtype == 8)`
 
-![Wireshark capture showing 802.11 beacon frames. Source: Unionman_4d:e6:f1 and Unionman_4d:e6:f2, Destination: Broadcast. SSID: HTB-Wireless, with sequence numbers and flags.](https://academy.hackthebox.com/storage/modules/229/1-evil-twin.png)
+![Wireshark capture showing 802.11 beacon frames. Source: Unionman\_4d:e6:f1 and Unionman\_4d:e6:f2, Destination: Broadcast. SSID: HTB-Wireless, with sequence numbers and flags.](https://academy.hackthebox.com/storage/modules/229/1-evil-twin.png)
 
-Beacon analysis is crucial in differentiating between genuine and fraudulent access points. One of the initial places to start is the `Robust Security Network (RSN)` information. This data communicates valuable information to clients about the supported ciphers, among other things.
+Beacon analysis is crucial in differentiating between genuine and fraudulent access points. One of the initial places to start is the `Robust Security Network (RSN)` information. This data communicates valuable information to clients about the supported ciphers, among other things.
 
 Suppose we wish to examine our legitimate access point's RSN information.
 
@@ -54,13 +55,13 @@ In most instances, a standard evil-twin attack will exhibit this characteristic.
 
 Under such circumstances, we could explore other aspects of the beacon frame, such as vendor-specific information, which is likely absent from the attacker's access point.
 
-## Finding a Fallen User
+### Finding a Fallen User
 
 Despite comprehensive security awareness training, some users may fall prey to attacks like these. Fortunately, in the case of open network style evil-twin attacks, we can view most higher-level traffic in an unencrypted format. To filter exclusively for the evil-twin access point, we would employ the following filter.
 
-- `(wlan.bssid == F8:14:FE:4D:E6:F2)`
+* `(wlan.bssid == F8:14:FE:4D:E6:F2)`
 
-![Wireshark capture showing 802.11 authentication and association frames between Unionman_4d:e6:f2 and IntelCor_af:eb:91. Includes ARP probes asking 'Who has 169.254.63.254?' sent to Broadcast.](https://academy.hackthebox.com/storage/modules/229/4-evil-twin.png)
+![Wireshark capture showing 802.11 authentication and association frames between Unionman\_4d:e6:f2 and IntelCor\_af:eb:91. Includes ARP probes asking 'Who has 169.254.63.254?' sent to Broadcast.](https://academy.hackthebox.com/storage/modules/229/4-evil-twin.png)
 
 If we detect ARP requests emanating from a client device connected to the suspicious network, we would identify this as a potential compromise indicator. In such instances, we should record pertinent details about the client device to further our incident response efforts.
 
@@ -69,6 +70,6 @@ If we detect ARP requests emanating from a client device connected to the suspic
 
 Consequently, we might be able to instigate password resets and other reactive measures to prevent further infringement of our environment.
 
-## Finding Rogue Access Points
+### Finding Rogue Access Points
 
 On the other hand, detecting rogue access points can often be a simple task of checking our network device lists. In the case of hotspot-based rogue access points (such as Windows hotspots), we might scrutinize wireless networks in our immediate vicinity. If we encounter an unrecognizable wireless network with a strong signal, particularly if it lacks encryption, this could indicate that a user has established a rogue access point to navigate around our perimeter controls.

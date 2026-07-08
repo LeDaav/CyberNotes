@@ -1,43 +1,44 @@
+# SMB
 
-`Server Message Block` (`SMB`) is a client-server protocol that regulates access to files and entire directories and other network resources such as printers, routers, or interfaces released for the network. Information exchange between different system processes can also be handled based on the SMB protocol. [SMB](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-smb/f210069c-7086-4dc2-885e-861d837df688) first became available to a broader public, for example, as part of the OS/2 network operating system LAN Manager and LAN Server. Since then, the main application area of the protocol has been the Windows operating system series in particular, whose network services support SMB in a downward-compatible manner - which means that devices with newer editions can easily communicate with devices that have an older Microsoft operating system installed. With the free software project Samba, there is also a solution that enables the use of SMB in Linux and Unix distributions and thus cross-platform communication via SMB.
+`Server Message Block` (`SMB`) is a client-server protocol that regulates access to files and entire directories and other network resources such as printers, routers, or interfaces released for the network. Information exchange between different system processes can also be handled based on the SMB protocol. [SMB](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-smb/f210069c-7086-4dc2-885e-861d837df688) first became available to a broader public, for example, as part of the OS/2 network operating system LAN Manager and LAN Server. Since then, the main application area of the protocol has been the Windows operating system series in particular, whose network services support SMB in a downward-compatible manner - which means that devices with newer editions can easily communicate with devices that have an older Microsoft operating system installed. With the free software project Samba, there is also a solution that enables the use of SMB in Linux and Unix distributions and thus cross-platform communication via SMB.
 
 The SMB protocol enables the client to communicate with other participants in the same network to access files or services shared with it on the network. The other system must also have implemented the network protocol and received and processed the client request using an SMB server application. Before that, however, both parties must establish a connection, which is why they first exchange corresponding messages.
 
-In IP networks, SMB uses TCP protocol for this purpose, which provides for a three-way handshake between client and server before a connection is finally established. The specifications of the TCP protocol also govern the subsequent transport of data. We can take a look at some examples [here](https://web.archive.org/web/20240815212710/https://winprotocoldoc.blob.core.windows.net/productionwindowsarchives/MS-SMB2/%5BMS-SMB2%5D.pdf#%5B%7B%22num%22%3A920%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C69%2C738%2C0%5D).
+In IP networks, SMB uses TCP protocol for this purpose, which provides for a three-way handshake between client and server before a connection is finally established. The specifications of the TCP protocol also govern the subsequent transport of data. We can take a look at some examples [here](https://web.archive.org/web/20240815212710/https://winprotocoldoc.blob.core.windows.net/productionwindowsarchives/MS-SMB2/\[MS-SMB2].pdf#%5B%7B%22num%22%3A920%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C69%2C738%2C0%5D).
 
-An SMB server can provide arbitrary parts of its local file system as shares. Therefore the hierarchy visible to a client is partially independent of the structure on the server. Access rights are defined by `Access Control Lists` (`ACL`). They can be controlled in a fine-grained manner based on attributes such as `execute`, `read`, and `full access` for individual users or user groups. The ACLs are defined based on the shares and therefore do not correspond to the rights assigned locally on the server.
+An SMB server can provide arbitrary parts of its local file system as shares. Therefore the hierarchy visible to a client is partially independent of the structure on the server. Access rights are defined by `Access Control Lists` (`ACL`). They can be controlled in a fine-grained manner based on attributes such as `execute`, `read`, and `full access` for individual users or user groups. The ACLs are defined based on the shares and therefore do not correspond to the rights assigned locally on the server.
 
----
+***
 
-## Samba
+### Samba
 
-As mentioned earlier, there is an alternative implementation of the SMB server called Samba, which is developed for Unix-based operating systems. Samba implements the Common Internet File System (`CIFS`) network protocol. [CIFS](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/934c2faa-54af-4526-ac74-6a24d126724e) is a dialect of SMB, meaning it is a specific implementation of the SMB protocol originally created by Microsoft. This allows Samba to communicate effectively with newer Windows systems. Therefore, it is often referred to as SMB/CIFS.
+As mentioned earlier, there is an alternative implementation of the SMB server called Samba, which is developed for Unix-based operating systems. Samba implements the Common Internet File System (`CIFS`) network protocol. [CIFS](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/934c2faa-54af-4526-ac74-6a24d126724e) is a dialect of SMB, meaning it is a specific implementation of the SMB protocol originally created by Microsoft. This allows Samba to communicate effectively with newer Windows systems. Therefore, it is often referred to as SMB/CIFS.
 
-However, `CIFS` is considered a specific version of the SMB protocol, primarily aligning with `SMB version 1`. When SMB commands are transmitted over Samba to an older NetBIOS service, connections typically occur over TCP ports `137`, `138`, and `139`. In contrast, CIFS operates over TCP port `445` exclusively. There are several versions of SMB, including newer versions like `SMB 2` and `SMB 3`, which offer improvements and are preferred in modern infrastructures, while older versions like `SMB 1` (`CIFS`) are considered outdated but may still be used in specific environments.
+However, `CIFS` is considered a specific version of the SMB protocol, primarily aligning with `SMB version 1`. When SMB commands are transmitted over Samba to an older NetBIOS service, connections typically occur over TCP ports `137`, `138`, and `139`. In contrast, CIFS operates over TCP port `445` exclusively. There are several versions of SMB, including newer versions like `SMB 2` and `SMB 3`, which offer improvements and are preferred in modern infrastructures, while older versions like `SMB 1` (`CIFS`) are considered outdated but may still be used in specific environments.
 
-|**SMB Version**|**Supported**|**Features**|
-|---|---|---|
-|CIFS|Windows NT 4.0|Communication via NetBIOS interface|
-|SMB 1.0|Windows 2000|Direct connection via TCP|
-|SMB 2.0|Windows Vista, Windows Server 2008|Performance upgrades, improved message signing, caching feature|
-|SMB 2.1|Windows 7, Windows Server 2008 R2|Locking mechanisms|
-|SMB 3.0|Windows 8, Windows Server 2012|Multichannel connections, end-to-end encryption, remote storage access|
-|SMB 3.0.2|Windows 8.1, Windows Server 2012 R2||
-|SMB 3.1.1|Windows 10, Windows Server 2016|Integrity checking, AES-128 encryption|
+| **SMB Version** | **Supported**                       | **Features**                                                           |
+| --------------- | ----------------------------------- | ---------------------------------------------------------------------- |
+| CIFS            | Windows NT 4.0                      | Communication via NetBIOS interface                                    |
+| SMB 1.0         | Windows 2000                        | Direct connection via TCP                                              |
+| SMB 2.0         | Windows Vista, Windows Server 2008  | Performance upgrades, improved message signing, caching feature        |
+| SMB 2.1         | Windows 7, Windows Server 2008 R2   | Locking mechanisms                                                     |
+| SMB 3.0         | Windows 8, Windows Server 2012      | Multichannel connections, end-to-end encryption, remote storage access |
+| SMB 3.0.2       | Windows 8.1, Windows Server 2012 R2 |                                                                        |
+| SMB 3.1.1       | Windows 10, Windows Server 2016     | Integrity checking, AES-128 encryption                                 |
 
 With version 3, the Samba server gained the ability to be a full member of an Active Directory domain. With version 4, Samba even provides an Active Directory domain controller. It contains several so-called daemons for this purpose - which are Unix background programs. The SMB server daemon (`smbd`) belonging to Samba provides the first two functionalities, while the NetBIOS message block daemon (`nmbd`) implements the last two functionalities. The SMB service controls these two background programs.
 
-We know that Samba is suitable for both Linux and Windows systems. In a network, each host participates in the same `workgroup`. A workgroup is a group name that identifies an arbitrary collection of computers and their resources on an SMB network. There can be multiple workgroups on the network at any given time. IBM developed an `application programming interface` (`API`) for networking computers called the `Network Basic Input/Output System` (`NetBIOS`). The NetBIOS API provided a blueprint for an application to connect and share data with other computers. In a NetBIOS environment, when a machine goes online, it needs a name, which is done through the so-called `name registration` procedure. Either each host reserves its hostname on the network, or the [NetBIOS Name Server](https://networkencyclopedia.com/netbios-name-server-nbns/) (`NBNS`) is used for this purpose. It also has been enhanced to [Windows Internet Name Service](https://networkencyclopedia.com/windows-internet-name-service-wins/) (`WINS`).
+We know that Samba is suitable for both Linux and Windows systems. In a network, each host participates in the same `workgroup`. A workgroup is a group name that identifies an arbitrary collection of computers and their resources on an SMB network. There can be multiple workgroups on the network at any given time. IBM developed an `application programming interface` (`API`) for networking computers called the `Network Basic Input/Output System` (`NetBIOS`). The NetBIOS API provided a blueprint for an application to connect and share data with other computers. In a NetBIOS environment, when a machine goes online, it needs a name, which is done through the so-called `name registration` procedure. Either each host reserves its hostname on the network, or the [NetBIOS Name Server](https://networkencyclopedia.com/netbios-name-server-nbns/) (`NBNS`) is used for this purpose. It also has been enhanced to [Windows Internet Name Service](https://networkencyclopedia.com/windows-internet-name-service-wins/) (`WINS`).
 
----
+***
 
-## Default Configuration
+### Default Configuration
 
-As we can imagine, Samba offers a wide range of [settings](https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html) that we can configure. Again, we define the settings via a text file where we can get an overview of some of the settings. These settings look like the following when filtered out:
+As we can imagine, Samba offers a wide range of [settings](https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html) that we can configure. Again, we define the settings via a text file where we can get an overview of some of the settings. These settings look like the following when filtered out:
 
-#### Default Configuration
+**Default Configuration**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 LeDaav@htb[/htb]$ cat /etc/samba/smb.conf | grep -v "#\|\;" 
@@ -80,44 +81,44 @@ LeDaav@htb[/htb]$ cat /etc/samba/smb.conf | grep -v "#\|\;"
 
 We see global settings and two shares that are intended for printers. The global settings are the configuration of the available SMB server that is used for all shares. In the individual shares, however, the global settings can be overwritten, which can be configured with high probability even incorrectly. Let us look at some of the settings to understand how the shares are configured in Samba.
 
-|**Setting**|**Description**|
-|---|---|
-|`[sharename]`|The name of the network share.|
-|`workgroup = WORKGROUP/DOMAIN`|Workgroup that will appear when clients query.|
-|`path = /path/here/`|The directory to which user is to be given access.|
-|`server string = STRING`|The string that will show up when a connection is initiated.|
-|`unix password sync = yes`|Synchronize the UNIX password with the SMB password?|
-|`usershare allow guests = yes`|Allow non-authenticated users to access defined share?|
-|`map to guest = bad user`|What to do when a user login request doesn't match a valid UNIX user?|
-|`browseable = yes`|Should this share be shown in the list of available shares?|
-|`guest ok = yes`|Allow connecting to the service without using a password?|
-|`read only = yes`|Allow users to read files only?|
-|`create mask = 0700`|What permissions need to be set for newly created files?|
+| **Setting**                    | **Description**                                                       |
+| ------------------------------ | --------------------------------------------------------------------- |
+| `[sharename]`                  | The name of the network share.                                        |
+| `workgroup = WORKGROUP/DOMAIN` | Workgroup that will appear when clients query.                        |
+| `path = /path/here/`           | The directory to which user is to be given access.                    |
+| `server string = STRING`       | The string that will show up when a connection is initiated.          |
+| `unix password sync = yes`     | Synchronize the UNIX password with the SMB password?                  |
+| `usershare allow guests = yes` | Allow non-authenticated users to access defined share?                |
+| `map to guest = bad user`      | What to do when a user login request doesn't match a valid UNIX user? |
+| `browseable = yes`             | Should this share be shown in the list of available shares?           |
+| `guest ok = yes`               | Allow connecting to the service without using a password?             |
+| `read only = yes`              | Allow users to read files only?                                       |
+| `create mask = 0700`           | What permissions need to be set for newly created files?              |
 
----
+***
 
-## Dangerous Settings
+### Dangerous Settings
 
-Some of the above settings already bring some sensitive options. However, suppose we question the settings listed below and ask ourselves what the employees could gain from them, as well as attackers. In that case, we will see what advantages and disadvantages the settings bring with them. Let us take the setting `browseable = yes` as an example. If we as administrators adopt this setting, the company's employees will have the comfort of being able to look at the individual folders with the contents. Many folders are eventually used for better organization and structure. If the employee can browse through the shares, the attacker will also be able to do so after successful access.
+Some of the above settings already bring some sensitive options. However, suppose we question the settings listed below and ask ourselves what the employees could gain from them, as well as attackers. In that case, we will see what advantages and disadvantages the settings bring with them. Let us take the setting `browseable = yes` as an example. If we as administrators adopt this setting, the company's employees will have the comfort of being able to look at the individual folders with the contents. Many folders are eventually used for better organization and structure. If the employee can browse through the shares, the attacker will also be able to do so after successful access.
 
-|**Setting**|**Description**|
-|---|---|
-|`browseable = yes`|Allow listing available shares in the current share?|
-|`read only = no`|Forbid the creation and modification of files?|
-|`writable = yes`|Allow users to create and modify files?|
-|`guest ok = yes`|Allow connecting to the service without using a password?|
-|`enable privileges = yes`|Honor privileges assigned to specific SID?|
-|`create mask = 0777`|What permissions must be assigned to the newly created files?|
-|`directory mask = 0777`|What permissions must be assigned to the newly created directories?|
-|`logon script = script.sh`|What script needs to be executed on the user's login?|
-|`magic script = script.sh`|Which script should be executed when the script gets closed?|
-|`magic output = script.out`|Where the output of the magic script needs to be stored?|
+| **Setting**                 | **Description**                                                     |
+| --------------------------- | ------------------------------------------------------------------- |
+| `browseable = yes`          | Allow listing available shares in the current share?                |
+| `read only = no`            | Forbid the creation and modification of files?                      |
+| `writable = yes`            | Allow users to create and modify files?                             |
+| `guest ok = yes`            | Allow connecting to the service without using a password?           |
+| `enable privileges = yes`   | Honor privileges assigned to specific SID?                          |
+| `create mask = 0777`        | What permissions must be assigned to the newly created files?       |
+| `directory mask = 0777`     | What permissions must be assigned to the newly created directories? |
+| `logon script = script.sh`  | What script needs to be executed on the user's login?               |
+| `magic script = script.sh`  | Which script should be executed when the script gets closed?        |
+| `magic output = script.out` | Where the output of the magic script needs to be stored?            |
 
-Let us create a share called `[notes]` and a few others and see how the settings affect our enumeration process. We will use all of the above settings and apply them to this share. For example, this setting is often applied, if only for testing purposes. If it is then an internal subnet of a small team in a large department, this setting is often retained or forgotten to be reset. This leads to the fact that we can browse through all the shares and, with high probability, even download and inspect them.
+Let us create a share called `[notes]` and a few others and see how the settings affect our enumeration process. We will use all of the above settings and apply them to this share. For example, this setting is often applied, if only for testing purposes. If it is then an internal subnet of a small team in a large department, this setting is often retained or forgotten to be reset. This leads to the fact that we can browse through all the shares and, with high probability, even download and inspect them.
 
-#### Example Share
+**Example Share**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 ...SNIP...
@@ -136,21 +137,21 @@ Let us create a share called `[notes]` and a few others and see how the settin
 	directory mask = 0777
 ```
 
-It is highly recommended to look at the man pages for Samba and configure it ourselves and experiment with the settings. We will then discover potential aspects that will be interesting for us as a penetration tester. In addition, the more familiar we become with the Samba server and SMB, the easier it will be to find our way around the environment and use it for our purposes. Once we have adjusted `/etc/samba/smb.conf` to our needs, we have to restart the service on the server.
+It is highly recommended to look at the man pages for Samba and configure it ourselves and experiment with the settings. We will then discover potential aspects that will be interesting for us as a penetration tester. In addition, the more familiar we become with the Samba server and SMB, the easier it will be to find our way around the environment and use it for our purposes. Once we have adjusted `/etc/samba/smb.conf` to our needs, we have to restart the service on the server.
 
-#### Restart Samba
+**Restart Samba**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 root@samba:~# sudo systemctl restart smbd
 ```
 
-Now we can display a list (`-L`) of the server's shares with the `smbclient` command from our host. We use the so-called `null session` (`-N`), which is `anonymous` access without the input of existing users or valid passwords.
+Now we can display a list (`-L`) of the server's shares with the `smbclient` command from our host. We use the so-called `null session` (`-N`), which is `anonymous` access without the input of existing users or valid passwords.
 
-#### SMBclient - Connecting to the Share
+**SMBclient - Connecting to the Share**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 LeDaav@htb[/htb]$ smbclient -N -L //10.129.14.128
@@ -165,9 +166,9 @@ LeDaav@htb[/htb]$ smbclient -N -L //10.129.14.128
 SMB1 disabled -- no workgroup available
 ```
 
-We can see that we now have five different shares on the Samba server from the result. Thereby `print$` and an `IPC$` are already included by default in the basic setting, as we have already seen. Since we deal with the `[notes]` share, let us log in and inspect it using the same client program. If we are not familiar with the client program, we can use the `help` command on successful login, listing all the possible commands we can execute.
+We can see that we now have five different shares on the Samba server from the result. Thereby `print$` and an `IPC$` are already included by default in the basic setting, as we have already seen. Since we deal with the `[notes]` share, let us log in and inspect it using the same client program. If we are not familiar with the client program, we can use the `help` command on successful login, listing all the possible commands we can execute.
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 LeDaav@htb[/htb]$ smbclient //10.129.14.128/notes
@@ -208,11 +209,11 @@ smb: \> ls
                 30313412 blocks of size 1024. 16480084 blocks available
 ```
 
-Once we have discovered interesting files or folders, we can download them using the `get` command. Smbclient also allows us to execute local system commands using an exclamation mark at the beginning (`!<cmd>`) without interrupting the connection.
+Once we have discovered interesting files or folders, we can download them using the `get` command. Smbclient also allows us to execute local system commands using an exclamation mark at the beginning (`!<cmd>`) without interrupting the connection.
 
-#### Download Files from SMB
+**Download Files from SMB**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 smb: \> get prep-prod.txt 
@@ -233,13 +234,13 @@ smb: \> !cat prep-prod.txt
 [] …	
 ```
 
-From the administrative point of view, we can check these connections using `smbstatus`. Apart from the Samba version, we can also see who, from which host, and which share the client is connected. This is especially important once we have entered a subnet (perhaps even an isolated one) that the others can still access.
+From the administrative point of view, we can check these connections using `smbstatus`. Apart from the Samba version, we can also see who, from which host, and which share the client is connected. This is especially important once we have entered a subnet (perhaps even an isolated one) that the others can still access.
 
-For example, with domain-level security, the samba server acts as a member of a Windows domain. Each domain has at least one domain controller, usually a Windows NT server providing password authentication. This domain controller provides the workgroup with a definitive password server. The domain controllers keep track of users and passwords in their own `NTDS.dit` and `Security Authentication Module` (`SAM`) and authenticate each user when they log in for the first time and wish to access another machine's share.
+For example, with domain-level security, the samba server acts as a member of a Windows domain. Each domain has at least one domain controller, usually a Windows NT server providing password authentication. This domain controller provides the workgroup with a definitive password server. The domain controllers keep track of users and passwords in their own `NTDS.dit` and `Security Authentication Module` (`SAM`) and authenticate each user when they log in for the first time and wish to access another machine's share.
 
-#### Samba Status
+**Samba Status**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 root@samba:~# smbstatus
@@ -256,15 +257,15 @@ notes        75691   10.10.14.4   Do Sep 23 00:12:06 2021 CEST     -            
 No locked files
 ```
 
----
+***
 
-## Footprinting the Service
+### Footprinting the Service
 
-Let us go back to one of our enumeration tools. Nmap also has many options and NSE scripts that can help us examine the target's SMB service more closely and get more information. The downside, however, is that these scans can take a long time. Therefore, it is also recommended to look at the service manually, mainly because we can find much more details than Nmap could show us. First, however, let us see what Nmap can find on our target Samba server, where we created the `[notes]` share for testing purposes.
+Let us go back to one of our enumeration tools. Nmap also has many options and NSE scripts that can help us examine the target's SMB service more closely and get more information. The downside, however, is that these scans can take a long time. Therefore, it is also recommended to look at the service manually, mainly because we can find much more details than Nmap could show us. First, however, let us see what Nmap can find on our target Samba server, where we created the `[notes]` share for testing purposes.
 
-#### Nmap
+**Nmap**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 LeDaav@htb[/htb]$ sudo nmap 10.129.14.128 -sV -sC -p139,445
@@ -291,13 +292,13 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 11.35 seconds
 ```
 
-We can see from the results that it is not very much that Nmap provided us with here. Therefore, we should resort to other tools that allow us to interact manually with the SMB and send specific requests for the information. One of the handy tools for this is `rpcclient`. This is a tool to perform MS-RPC functions.
+We can see from the results that it is not very much that Nmap provided us with here. Therefore, we should resort to other tools that allow us to interact manually with the SMB and send specific requests for the information. One of the handy tools for this is `rpcclient`. This is a tool to perform MS-RPC functions.
 
-The [Remote Procedure Call](https://www.geeksforgeeks.org/remote-procedure-call-rpc-in-operating-system/) (`RPC`) is a concept and, therefore, also a central tool to realize operational and work-sharing structures in networks and client-server architectures. The communication process via RPC includes passing parameters and the return of a function value.
+The [Remote Procedure Call](https://www.geeksforgeeks.org/remote-procedure-call-rpc-in-operating-system/) (`RPC`) is a concept and, therefore, also a central tool to realize operational and work-sharing structures in networks and client-server architectures. The communication process via RPC includes passing parameters and the return of a function value.
 
-#### RPCclient
+**RPCclient**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 LeDaav@htb[/htb]$ rpcclient -U "" 10.129.14.128
@@ -306,21 +307,21 @@ Enter WORKGROUP\'s password:
 rpcclient $> 
 ```
 
-The `rpcclient` offers us many different requests with which we can execute specific functions on the SMB server to get information. A complete list of all these functions can be found on the [man page](https://www.samba.org/samba/docs/current/man-html/rpcclient.1.html) of the rpcclient.
+The `rpcclient` offers us many different requests with which we can execute specific functions on the SMB server to get information. A complete list of all these functions can be found on the [man page](https://www.samba.org/samba/docs/current/man-html/rpcclient.1.html) of the rpcclient.
 
-|**Query**|**Description**|
-|---|---|
-|`srvinfo`|Server information.|
-|`enumdomains`|Enumerate all domains that are deployed in the network.|
-|`querydominfo`|Provides domain, server, and user information of deployed domains.|
-|`netshareenumall`|Enumerates all available shares.|
-|`netsharegetinfo <share>`|Provides information about a specific share.|
-|`enumdomusers`|Enumerates all domain users.|
-|`queryuser <RID>`|Provides information about a specific user.|
+| **Query**                 | **Description**                                                    |
+| ------------------------- | ------------------------------------------------------------------ |
+| `srvinfo`                 | Server information.                                                |
+| `enumdomains`             | Enumerate all domains that are deployed in the network.            |
+| `querydominfo`            | Provides domain, server, and user information of deployed domains. |
+| `netshareenumall`         | Enumerates all available shares.                                   |
+| `netsharegetinfo <share>` | Provides information about a specific share.                       |
+| `enumdomusers`            | Enumerates all domain users.                                       |
+| `queryuser <RID>`         | Provides information about a specific user.                        |
 
-#### RPCclient - Enumeration
+**RPCclient - Enumeration**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 rpcclient $> srvinfo
@@ -398,13 +399,13 @@ DACL
                 SID: S-1-1-0
 ```
 
-These examples show us what information can be leaked to anonymous users. Once an `anonymous` user has access to a network service, it only takes one mistake to give them too many permissions or too much visibility to put the entire network at significant risk.
+These examples show us what information can be leaked to anonymous users. Once an `anonymous` user has access to a network service, it only takes one mistake to give them too many permissions or too much visibility to put the entire network at significant risk.
 
-Most importantly, anonymous access to such services can also lead to the discovery of other users, who can be attacked with brute-forcing in the most aggressive case. Humans are more error-prone than properly configured computer processes, and the lack of security awareness and laziness often leads to weak passwords that can be easily cracked. Let us see how we can enumerate users using the `rpcclient`.
+Most importantly, anonymous access to such services can also lead to the discovery of other users, who can be attacked with brute-forcing in the most aggressive case. Humans are more error-prone than properly configured computer processes, and the lack of security awareness and laziness often leads to weak passwords that can be easily cracked. Let us see how we can enumerate users using the `rpcclient`.
 
-#### Rpcclient - User Enumeration
+**Rpcclient - User Enumeration**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 rpcclient $> enumdomusers
@@ -475,9 +476,9 @@ rpcclient $> queryuser 0x3e8
 
 We can then use the results to identify the group's RID, which we can then use to retrieve information from the entire group.
 
-#### Rpcclient - Group Information
+**Rpcclient - Group Information**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 rpcclient $> querygroup 0x201
@@ -488,11 +489,11 @@ rpcclient $> querygroup 0x201
         Num Members:2
 ```
 
-However, it can also happen that not all commands are available to us, and we have certain restrictions based on the user. However, the query `queryuser <RID>` is mostly allowed based on the RID. So we can use the rpcclient to brute force the RIDs to get information. Because we may not know who has been assigned which RID, we know that we will get information about it as soon as we query an assigned RID. There are several ways and tools we can use for this. To stay with the tool, we can create a `For-loop` using `Bash` where we send a command to the service using rpcclient and filter out the results.
+However, it can also happen that not all commands are available to us, and we have certain restrictions based on the user. However, the query `queryuser <RID>` is mostly allowed based on the RID. So we can use the rpcclient to brute force the RIDs to get information. Because we may not know who has been assigned which RID, we know that we will get information about it as soon as we query an assigned RID. There are several ways and tools we can use for this. To stay with the tool, we can create a `For-loop` using `Bash` where we send a command to the service using rpcclient and filter out the results.
 
-#### Brute Forcing User RIDs
+**Brute Forcing User RIDs**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 LeDaav@htb[/htb]$ for i in $(seq 500 1100);do rpcclient -N -U "" 10.129.14.128 -c "queryuser 0x$(printf '%x\n' $i)" | grep "User Name\|user_rid\|group_rid" && echo "";done
@@ -510,11 +511,11 @@ LeDaav@htb[/htb]$ for i in $(seq 500 1100);do rpcclient -N -U "" 10.129.14.128 -
         group_rid:      0x201
 ```
 
-An alternative to this would be a Python script from [Impacket](https://github.com/SecureAuthCorp/impacket) called [samrdump.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/samrdump.py).
+An alternative to this would be a Python script from [Impacket](https://github.com/SecureAuthCorp/impacket) called [samrdump.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/samrdump.py).
 
-#### Impacket - Samrdump.py
+**Impacket - Samrdump.py**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 LeDaav@htb[/htb]$ samrdump.py 10.129.14.128
@@ -549,11 +550,11 @@ cry0l1t3 (1001)/ScriptPath:
 [*] Received 2 entries.
 ```
 
-The information we have already obtained with `rpcclient` can also be obtained using other tools. For example, the [SMBMap](https://github.com/ShawnDEvans/smbmap) and [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec) tools are also widely used and helpful for the enumeration of SMB services.
+The information we have already obtained with `rpcclient` can also be obtained using other tools. For example, the [SMBMap](https://github.com/ShawnDEvans/smbmap) and [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec) tools are also widely used and helpful for the enumeration of SMB services.
 
-#### SMBmap
+**SMBmap**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 LeDaav@htb[/htb]$ smbmap -H 10.129.14.128
@@ -570,9 +571,9 @@ LeDaav@htb[/htb]$ smbmap -H 10.129.14.128
         IPC$                                                    NO ACCESS       IPC Service (DEVSM)
 ```
 
-#### CrackMapExec
+**CrackMapExec**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 LeDaav@htb[/htb]$ crackmapexec smb 10.129.14.128 --shares -u '' -p ''
@@ -589,11 +590,11 @@ SMB         10.129.14.128   445    DEVSMB           notes           READ,WRITE  
 SMB         10.129.14.128   445    DEVSMB           IPC$                            IPC Service (DEVSM)
 ```
 
-Another tool worth mentioning is the so-called [enum4linux-ng](https://github.com/cddmp/enum4linux-ng), which is based on an older tool, enum4linux. This tool automates many of the queries, but not all, and can return a large amount of information.
+Another tool worth mentioning is the so-called [enum4linux-ng](https://github.com/cddmp/enum4linux-ng), which is based on an older tool, enum4linux. This tool automates many of the queries, but not all, and can return a large amount of information.
 
-#### Enum4Linux-ng - Installation
+**Enum4Linux-ng - Installation**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 LeDaav@htb[/htb]$ git clone https://github.com/cddmp/enum4linux-ng.git
@@ -601,9 +602,9 @@ LeDaav@htb[/htb]$ cd enum4linux-ng
 LeDaav@htb[/htb]$ pip3 install -r requirements.txt
 ```
 
-#### Enum4Linux-ng - Enumeration
+**Enum4Linux-ng - Enumeration**
 
-  SMB
+&#x20; SMB
 
 ```shell-session
 LeDaav@htb[/htb]$ ./enum4linux-ng.py 10.129.14.128 -A

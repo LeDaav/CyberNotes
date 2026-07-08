@@ -1,7 +1,8 @@
+# ICMP Tunneling
 
 Tunneling is a technique employed by adversaries in order to exfiltrate data from one location to another. There are many different kinds of tunneling, and each different kind uses a different protocol. Commonly, attackers may utilize proxies to bypass our network controls, or protocols that our systems and controls allow.
 
-## Basics of Tunneling
+### Basics of Tunneling
 
 Essentially, when an attacker wants to communicate data to another host, they may employ tunneling. In many cases, we might notice this through the attacker possessing some command and control over one of our machines. As noted, tunneling can be conducted in many different ways. One of the more common types is SSH tunneling. However, proxy-based, HTTP, HTTPs, DNS, and other types can be observed in similar ways.
 
@@ -9,13 +10,13 @@ Essentially, when an attacker wants to communicate data to another host, they ma
 
 The idea behind tunneling is that an attacker will be able to expand their command and control and bypass our network controls through the protocol of their choosing.
 
-## ICMP Tunneling
+### ICMP Tunneling
 
 In the case of ICMP tunneling an attacker will append data they want to exfiltrate to the outside world or another host in the data field in an ICMP request. This is done with the intention to hide this data among a common protocol type like ICMP, and hopefully get lost within our network traffic.
 
 ![Diagram showing Host A sending an Echo Request to Server, and Server sending an Echo Reply back.](https://academy.hackthebox.com/storage/modules/229/icmp_ping_example.jpg)
 
-## Finding ICMP Tunneling
+### Finding ICMP Tunneling
 
 Since ICMP tunneling is primarily done through an attacker adding data into the data field for ICMP, we can find it by looking at the contents of data per request and reply.
 
@@ -43,7 +44,7 @@ On the other hand, more advanced adversaries will utilize encoding or encryption
 
 We could copy this value out of Wireshark and decode it within linux with the base64 utility.
 
-  ICMP Tunneling
+&#x20; ICMP Tunneling
 
 ```shell-session
 LeDaav@htb[/htb]$ echo 'VGhpcyBpcyBhIHNlY3VyZSBrZXk6IEtleTEyMzQ1Njc4OQo=' | base64 -d
@@ -51,10 +52,9 @@ LeDaav@htb[/htb]$ echo 'VGhpcyBpcyBhIHNlY3VyZSBrZXk6IEtleTEyMzQ1Njc4OQo=' | base
 
 This would also be a case where ICMP tunneling is observed. In many cases, if the ICMP data length is larger than 48-bytes, we know something fishy is going on, and should always look into it.
 
-## Preventing ICMP Tunneling
+### Preventing ICMP Tunneling
 
 In order to prevent ICMP tunneling from occurring we can conduct the following actions.
 
-1. `Block ICMP Requests` - Simply, if ICMP is not allowed, attackers will not be able to utilize it.
-    
-2. `Inspect ICMP Requests and Replies for Data` - Stripping data, or inspecting data for malicious content on these requests and replies can allow us better insight into our environment, and the ability to prevent this data exfiltration.
+1. `Block ICMP Requests` - Simply, if ICMP is not allowed, attackers will not be able to utilize it.
+2. `Inspect ICMP Requests and Replies for Data` - Stripping data, or inspecting data for malicious content on these requests and replies can allow us better insight into our environment, and the ability to prevent this data exfiltration.

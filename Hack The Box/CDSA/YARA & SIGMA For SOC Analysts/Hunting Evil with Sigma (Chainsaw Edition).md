@@ -1,21 +1,22 @@
+# Hunting Evil with Sigma (Chainsaw Edition)
 
 In cybersecurity, time is of the essence. Rapid analysis allows us to not just identify but also respond to threats before they escalate.
 
-When we're up against the clock, racing to find a needle in a haystack of Windows Event Logs without access to a SIEM, Sigma rules combined with tools like [Chainsaw](https://github.com/WithSecureLabs/chainsaw) and [Zircolite](https://github.com/wagga40/Zircolite) are our best allies.
+When we're up against the clock, racing to find a needle in a haystack of Windows Event Logs without access to a SIEM, Sigma rules combined with tools like [Chainsaw](https://github.com/WithSecureLabs/chainsaw) and [Zircolite](https://github.com/wagga40/Zircolite) are our best allies.
 
 Both tools allow us to use Sigma rules to scan not just one, but multiple EVTX files concurrently, offering a broader and more comprehensive scan in a very efficient manner.
 
 Let's now navigate to the bottom of this section and click on "Click here to spawn the target system!". Then, let's RDP into the Target IP using the provided credentials. The vast majority of the actions/commands covered from this point up to end of this section can be replicated inside the target, offering a more comprehensive grasp of the topics presented.
 
-## Scanning Windows Event Logs With Chainsaw
+### Scanning Windows Event Logs With Chainsaw
 
 Chainsaw is a freely available tool designed to swiftly pinpoint security threats within Windows Event Logs. This tool enables efficient keyword-based event log searches and is equipped with integrated support for Sigma detection rules as well as custom Chainsaw rules. Therefore, it serves as a valuable asset for validating our Sigma rules by applying them to actual event logs. Let's download the Chainsaw from the official Github repository and run it with some sigma rules:
 
-Chainsaw can be found inside the `C:\Tools\chainsaw` directory of this section's target.
+Chainsaw can be found inside the `C:\Tools\chainsaw` directory of this section's target.
 
-Let's first run Chainsaw with `-h` flag to see the help menu.
+Let's first run Chainsaw with `-h` flag to see the help menu.
 
-  Hunting Evil with Sigma (Chainsaw Edition)
+&#x20; Hunting Evil with Sigma (Chainsaw Edition)
 
 ```powershell-session
 PS C:\Tools\chainsaw> .\chainsaw_x86_64-pc-windows-msvc.exe -h
@@ -52,13 +53,13 @@ Examples:
         ./chainsaw search -t 'Event.System.EventID: =4104' evtx_attack_samples/
 ```
 
----
+***
 
-#### Example 1: Hunting for Multiple Failed Logins From Single Source With Sigma
+**Example 1: Hunting for Multiple Failed Logins From Single Source With Sigma**
 
-Let's put Chainsaw to work by applying our most recent Sigma rule, `win_security_susp_failed_logons_single_source2.yml` (available at `C:\Rules\sigma`), to `lab_events_2.evtx` (available at `C:\Events\YARASigma\lab_events_2.evtx`) that contains multiple failed login attempts from the same source.
+Let's put Chainsaw to work by applying our most recent Sigma rule, `win_security_susp_failed_logons_single_source2.yml` (available at `C:\Rules\sigma`), to `lab_events_2.evtx` (available at `C:\Events\YARASigma\lab_events_2.evtx`) that contains multiple failed login attempts from the same source.
 
-  Hunting Evil with Sigma (Chainsaw Edition)
+&#x20; Hunting Evil with Sigma (Chainsaw Edition)
 
 ```powershell-session
 PS C:\Tools\chainsaw> .\chainsaw_x86_64-pc-windows-msvc.exe hunt C:\Events\YARASigma\lab_events_2.evtx -s C:\Rules\sigma\win_security_susp_failed_logons_single_source2.yml --mapping .\mappings\sigma-event-logs-all.yml
@@ -91,21 +92,21 @@ PS C:\Tools\chainsaw> .\chainsaw_x86_64-pc-windows-msvc.exe hunt C:\Events\YARAS
 PS C:\Tools\chainsaw>
 ```
 
-Our Sigma rule was able to identify the multiple failed login attempts against `NOUSER`.
+Our Sigma rule was able to identify the multiple failed login attempts against `NOUSER`.
 
-Using the `-s` parameter, we can specify a directory containing Sigma detection rules (or one Sigma detection rule) and Chainsaw will automatically load, convert and run these rules against the provided event logs. The mapping file (specified through the `--mapping` parameter) tells Chainsaw which fields in the event logs to use for rule matching.
+Using the `-s` parameter, we can specify a directory containing Sigma detection rules (or one Sigma detection rule) and Chainsaw will automatically load, convert and run these rules against the provided event logs. The mapping file (specified through the `--mapping` parameter) tells Chainsaw which fields in the event logs to use for rule matching.
 
----
+***
 
-#### Example 2: Hunting for Abnormal PowerShell Command Line Size With Sigma (Based on Event ID 4688)
+**Example 2: Hunting for Abnormal PowerShell Command Line Size With Sigma (Based on Event ID 4688)**
 
 Firstly, let's set the stage by recognizing that PowerShell, being a highly flexible scripting language, is an attractive target for attackers. Its deep integration with Windows APIs and .NET Framework makes it an ideal candidate for a variety of post-exploitation activities.
 
 To conceal their actions, attackers utilize complex encoding layers or misuse cmdlets for purposes they weren't designed for. This leads to abnormally long PowerShell commands that often incorporate Base64 encoding, string merging, and several variables containing fragmented parts of the command.
 
-A Sigma rule that can detect abnormally long PowerShell command lines can be found inside the `C:\Rules\sigma` directory of this section's target, saved as `proc_creation_win_powershell_abnormal_commandline_size.yml`.
+A Sigma rule that can detect abnormally long PowerShell command lines can be found inside the `C:\Rules\sigma` directory of this section's target, saved as `proc_creation_win_powershell_abnormal_commandline_size.yml`.
 
-Code: yaml
+Code: yaml
 
 ```yaml
 title: Unusually Long PowerShell CommandLine
@@ -145,9 +146,9 @@ level: low
 
 **Sigma Rule Breakdown**:
 
-- `logsource`: The rule looks into logs under the category of [process_creation](https://github.com/SigmaHQ/sigma/blob/master/documentation/logsource-guides/windows/category/process_creation.md) and is designed to work against Windows machines.
+* `logsource`: The rule looks into logs under the category of [process\_creation](https://github.com/SigmaHQ/sigma/blob/master/documentation/logsource-guides/windows/category/process_creation.md) and is designed to work against Windows machines.
 
-Code: yaml
+Code: yaml
 
 ```yaml
 logsource:
@@ -155,9 +156,9 @@ logsource:
     product: windows
 ```
 
-- `detection`: The `selection` section checks if any Windows events with ID [4688](https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4688) exist and also checks if the `NewProcessName` field ends with `\powershell.exe`, `\pwsh.exe`, or `\cmd.exe`. The `selection_powershell` section checks if the executed command line includes PowerShell-related executables and finally, the `selection_length` section checks if the `CommandLine` field of the `4688` event contains 1,000 characters or more. The `condition` section checks if the selection criteria inside the `selection`, `selection_powershell`, and `selection_length` sections are all met.
+* `detection`: The `selection` section checks if any Windows events with ID [4688](https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4688) exist and also checks if the `NewProcessName` field ends with `\powershell.exe`, `\pwsh.exe`, or `\cmd.exe`. The `selection_powershell` section checks if the executed command line includes PowerShell-related executables and finally, the `selection_length` section checks if the `CommandLine` field of the `4688` event contains 1,000 characters or more. The `condition` section checks if the selection criteria inside the `selection`, `selection_powershell`, and `selection_length` sections are all met.
 
-Code: yaml
+Code: yaml
 
 ```yaml
 detection:
@@ -176,11 +177,11 @@ detection:
     condition: selection and selection_powershell and selection_length
 ```
 
-Let's put Chainsaw to work by applying the abovementioned Sigma rule, `proc_creation_win_powershell_abnormal_commandline_size.yml` (available at `C:\Rules\sigma`), to `lab_events_3.evtx` (available at `C:\Events\YARASigma\lab_events_3.evtx`, thanks to [mdecrevoisier](https://twitter.com/mdecrevoisier)) that contains `4688` events with abnormally long PowerShell commands.
+Let's put Chainsaw to work by applying the abovementioned Sigma rule, `proc_creation_win_powershell_abnormal_commandline_size.yml` (available at `C:\Rules\sigma`), to `lab_events_3.evtx` (available at `C:\Events\YARASigma\lab_events_3.evtx`, thanks to [mdecrevoisier](https://twitter.com/mdecrevoisier)) that contains `4688` events with abnormally long PowerShell commands.
 
 ![Event 4688 in Windows security auditing showing process creation. New process cmd.exe with ID 0x6e8 created by SYSTEM on FS03VULN$ in OFFSEC domain. Command line includes PowerShell execution.](https://academy.hackthebox.com/storage/modules/234/4688.png)
 
-  Hunting Evil with Sigma (Chainsaw Edition)
+&#x20; Hunting Evil with Sigma (Chainsaw Edition)
 
 ```powershell-session
 PS C:\Tools\chainsaw> .\chainsaw_x86_64-pc-windows-msvc.exe hunt C:\Events\YARASigma\lab_events_3.evtx -s C:\Rules\sigma\proc_creation_win_powershell_abnormal_commandline_size.yml --mapping .\mappings\sigma-event-logs-all.yml
@@ -201,17 +202,17 @@ PS C:\Tools\chainsaw> .\chainsaw_x86_64-pc-windows-msvc.exe hunt C:\Events\YARAS
 [+] 0 Detections found on 0 documents
 ```
 
-Our Sigma doesn't seem to be able to identify the abnormally long PowerShell commands within these `4688` events.
+Our Sigma doesn't seem to be able to identify the abnormally long PowerShell commands within these `4688` events.
 
-Does this mean that our Sigma rule is flawed? No! As discussed previously, Chainsaw's mapping file (specified through the `--mapping` parameter) tells it which fields in the event logs to use for rule matching.
+Does this mean that our Sigma rule is flawed? No! As discussed previously, Chainsaw's mapping file (specified through the `--mapping` parameter) tells it which fields in the event logs to use for rule matching.
 
-It looks like the `NewProcessName` field was missing from the `sigma-event-logs-all.yml` mapping file.
+It looks like the `NewProcessName` field was missing from the `sigma-event-logs-all.yml` mapping file.
 
-We introduced the `NewProcessName` field into a `sigma-event-logs-all-new.yml` mapping file inside the `C:\Tools\chainsaw\mappings` directory of this section's target.
+We introduced the `NewProcessName` field into a `sigma-event-logs-all-new.yml` mapping file inside the `C:\Tools\chainsaw\mappings` directory of this section's target.
 
 Let's run Chainsaw again with this new mapping file.
 
-  Hunting Evil with Sigma (Chainsaw Edition)
+&#x20; Hunting Evil with Sigma (Chainsaw Edition)
 
 ```powershell-session
 PS C:\Tools\chainsaw> .\chainsaw_x86_64-pc-windows-msvc.exe hunt C:\Events\YARASigma\lab_events_3.evtx -s C:\Rules\sigma\proc_creation_win_powershell_abnormal_commandline_size.yml --mapping .\mappings\sigma-event-logs-all-new.yml
@@ -323,6 +324,6 @@ PS C:\Tools\chainsaw> .\chainsaw_x86_64-pc-windows-msvc.exe hunt C:\Events\YARAS
 [+] 3 Detections found on 3 documents
 ```
 
-Our Sigma rule successfully uncovered all three abnormally long PowerShell commands that exist inside `lab_events_3.evtx`
+Our Sigma rule successfully uncovered all three abnormally long PowerShell commands that exist inside `lab_events_3.evtx`
 
 Remember that configuration when it comes to using or tranlating Sigma rules is of paramount importance!

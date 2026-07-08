@@ -1,99 +1,94 @@
+# Memory Forensics
 
-## Memory Forensics Definition & Process
+### Memory Forensics Definition & Process
 
 `Memory forensics`, also known as volatile memory analysis, is a specialized branch of digital forensics that focuses on the examination and analysis of the volatile memory (RAM) of a computer or digital device. Unlike traditional digital forensics, which involves analyzing data stored on non-volatile storage media like hard drives or solid-state drives, memory forensics deals with the live state of a system at a particular moment in time.
 
 Here are some types of data found in RAM that are valuable for incident investigation:
 
-- `Network connections`
-- `File handles and open Files`
-- `Open registry keys`
-- `Running processes on the system`
-- `Loaded modules`
-- `Loaded device drivers`
-- `Command history and console sessions`
-- `Kernel data structures`
-- `User and credential information`
-- `Malware artifacts`
-- `System configuration`
-- `Process memory regions`
+* `Network connections`
+* `File handles and open Files`
+* `Open registry keys`
+* `Running processes on the system`
+* `Loaded modules`
+* `Loaded device drivers`
+* `Command history and console sessions`
+* `Kernel data structures`
+* `User and credential information`
+* `Malware artifacts`
+* `System configuration`
+* `Process memory regions`
 
-As we discussed both in the previous section and in the `YARA & Sigma for SOC Analysts` module, when malware operates, it often leaves traces or footprints in a system's active memory. By analyzing this memory, investigators can uncover malicious processes, identify indicators of compromise, and reconstruct the malware's actions.
+As we discussed both in the previous section and in the `YARA & Sigma for SOC Analysts` module, when malware operates, it often leaves traces or footprints in a system's active memory. By analyzing this memory, investigators can uncover malicious processes, identify indicators of compromise, and reconstruct the malware's actions.
 
 It should be noted that in some cases, important data or encryption keys may reside in memory. Memory forensics can help recover this data, which may be crucial for an investigation.
 
-The following outlines a systematic approach to memory forensics, formulated to aid in in-memory investigations and drawing inspiration from [SANS](https://www.sans.org/)'s six-step memory forensics methodology.
+The following outlines a systematic approach to memory forensics, formulated to aid in in-memory investigations and drawing inspiration from [SANS](https://www.sans.org/)'s six-step memory forensics methodology.
 
 1. `Process Identification and Verification`: Let's begin by identifying all active processes. Malicious software often masquerades as legitimate processes, sometimes with subtle name variations to avoid detection. We need to:
-    
-    - Enumerate all running processes.
-    - Determine their origin within the operating system.
-    - Cross-reference with known legitimate processes.
-    - Highlight any discrepancies or suspicious naming conventions.
+   * Enumerate all running processes.
+   * Determine their origin within the operating system.
+   * Cross-reference with known legitimate processes.
+   * Highlight any discrepancies or suspicious naming conventions.
 2. `Deep Dive into Process Components`: Once we've flagged potentially rogue processes, our next step is to scrutinize the associated Dynamic Link Libraries (DLLs) and handles. Malware often exploits DLLs to conceal its activities. We should:
-    
-    - Examine DLLs linked to the suspicious process.
-    - Check for unauthorized or malicious DLLs.
-    - Investigate any signs of DLL injection or hijacking.
+   * Examine DLLs linked to the suspicious process.
+   * Check for unauthorized or malicious DLLs.
+   * Investigate any signs of DLL injection or hijacking.
 3. `Network Activity Analysis`: Many malware strains, especially those that operate in stages, necessitate internet connectivity. They might beacon to Command and Control (C2) servers or exfiltrate data. To uncover these:
-    
-    - Review active and passive network connections in the system's memory.
-    - Identify and document external IP addresses and associated domains.
-    - Determine the nature and purpose of the communication.
-        - Validate the process' legitimacy.
-        - Assess if the process typically requires network communication.
-        - Trace back to the parent process.
-        - Evaluate its behavior and necessity.
+   * Review active and passive network connections in the system's memory.
+   * Identify and document external IP addresses and associated domains.
+   * Determine the nature and purpose of the communication.
+     * Validate the process' legitimacy.
+     * Assess if the process typically requires network communication.
+     * Trace back to the parent process.
+     * Evaluate its behavior and necessity.
 4. `Code Injection Detection`: Advanced adversaries often employ techniques like process hollowing or utilize unmapped memory sections. To counter this, we should:
-    
-    - Use memory analysis tools to detect anomalies or signs of these techniques.
-    - Identify any processes that seem to occupy unusual memory spaces or exhibit unexpected behaviors.
+   * Use memory analysis tools to detect anomalies or signs of these techniques.
+   * Identify any processes that seem to occupy unusual memory spaces or exhibit unexpected behaviors.
 5. `Rootkit Discovery`: Achieving stealth and persistence is a common goal for adversaries. Rootkits, which embed deep within the OS, grant threat actors continuous, often elevated, system access while evading detection. To tackle this:
-    
-    - Scan for signs of rootkit activity or deep OS alterations.
-    - Identify any processes or drivers operating at unusually high privileges or exhibiting stealth behaviors.
+   * Scan for signs of rootkit activity or deep OS alterations.
+   * Identify any processes or drivers operating at unusually high privileges or exhibiting stealth behaviors.
 6. `Extraction of Suspicious Elements`: After pinpointing suspicious processes, drivers, or executables, we need to isolate them for in-depth analysis. This involves:
-    
-    - Dumping the suspicious components from memory.
-    - Storing them securely for subsequent examination using specialized forensic tools.
+   * Dumping the suspicious components from memory.
+   * Storing them securely for subsequent examination using specialized forensic tools.
 
----
+***
 
-## The Volatility Framework
+### The Volatility Framework
 
-The preferred tool for conducting memory forensics is [Volatility](https://www.volatilityfoundation.org/releases). Volatility is a leading open-source memory forensics framework. At the heart of this framework lies the Volatility Python script. This script harnesses a plethora of plugins, enabling it to dissect memory images with precision. Given its Python foundation, we can execute Volatility on any platform that's Python-compatible. Moreover, our team can leverage Volatility to scrutinize memory image files from a broad spectrum of widely-used operating systems. This includes Windows, spanning from Windows XP to Windows Server 2016, macOS, and, of course, prevalent Linux distributions.
+The preferred tool for conducting memory forensics is [Volatility](https://www.volatilityfoundation.org/releases). Volatility is a leading open-source memory forensics framework. At the heart of this framework lies the Volatility Python script. This script harnesses a plethora of plugins, enabling it to dissect memory images with precision. Given its Python foundation, we can execute Volatility on any platform that's Python-compatible. Moreover, our team can leverage Volatility to scrutinize memory image files from a broad spectrum of widely-used operating systems. This includes Windows, spanning from Windows XP to Windows Server 2016, macOS, and, of course, prevalent Linux distributions.
 
 Volatility modules or plugins are extensions or add-ons that enhance the functionality of the Volatility Framework by extracting specific information or perform specific analysis tasks on memory images.
 
 Some commonly used modules include:
 
-- **`pslist`**: Lists the running processes.
-- **`cmdline`**: Displays process command-line arguments
-- **`netscan`**: Scans for network connections and open ports.
-- **`malfind`**: Scans for potentially malicious code injected into processes.
-- **`handles`**: Scans for open handles
-- **`svcscan`**: Lists Windows services.
-- **`dlllist`**: Lists loaded DLLs (Dynamic-link Libraries) in a process.
-- **`hivelist`**: Lists the registry hives in memory.
+* **`pslist`**: Lists the running processes.
+* **`cmdline`**: Displays process command-line arguments
+* **`netscan`**: Scans for network connections and open ports.
+* **`malfind`**: Scans for potentially malicious code injected into processes.
+* **`handles`**: Scans for open handles
+* **`svcscan`**: Lists Windows services.
+* **`dlllist`**: Lists loaded DLLs (Dynamic-link Libraries) in a process.
+* **`hivelist`**: Lists the registry hives in memory.
 
 Volatility offers extensive documentation. You can find modules and their associated documentation using the following links:
 
-- **Volatility v2**: [https://github.com/volatilityfoundation/volatility/wiki/Command-Reference](https://github.com/volatilityfoundation/volatility/wiki/Command-Reference)
-- **Volatility v3**: [https://volatility3.readthedocs.io/en/latest/index.html](https://volatility3.readthedocs.io/en/latest/index.html)
+* **Volatility v2**: [https://github.com/volatilityfoundation/volatility/wiki/Command-Reference](https://github.com/volatilityfoundation/volatility/wiki/Command-Reference)
+* **Volatility v3**: [https://volatility3.readthedocs.io/en/latest/index.html](https://volatility3.readthedocs.io/en/latest/index.html)
 
-A useful Volatility (v2 & v3) cheatsheet can be found here: [https://blog.onfvp.com/post/volatility-cheatsheet/](https://blog.onfvp.com/post/volatility-cheatsheet/)
+A useful Volatility (v2 & v3) cheatsheet can be found here: [https://blog.onfvp.com/post/volatility-cheatsheet/](https://blog.onfvp.com/post/volatility-cheatsheet/)
 
----
+***
 
-#### Volatility v2 Fundamentals
+**Volatility v2 Fundamentals**
 
 Let's now navigate to the bottom of this section and click on "Click here to spawn the target system!". Then, let's SSH into the Target IP using the provided credentials. The vast majority of the actions/commands covered from this point up to end of this section can be replicated inside the target, offering a more comprehensive grasp of the topics presented.
 
-Let's now see a demonstration of utilizing `Volatility v2` to analyze a memory dump saved as `Win7-2515534d.vmem` inside the `/home/htb-student/MemoryDumps` directory of this section's target.
+Let's now see a demonstration of utilizing `Volatility v2` to analyze a memory dump saved as `Win7-2515534d.vmem` inside the `/home/htb-student/MemoryDumps` directory of this section's target.
 
-Volatility's `help` section and `available plugins` can be seen as follows.
+Volatility's `help` section and `available plugins` can be seen as follows.
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py --help
@@ -336,11 +331,11 @@ Options:
                 yarascan        Scan process or kernel memory with Yara signatures 
 ```
 
-#### Identifying the Profile
+**Identifying the Profile**
 
-Profiles are essential for Volatility v2 to interpret the memory data correctly (profile identification has been enhanced in v3). To determine the profile that matches the operating system of the memory dump we can use the `imageinfo` plugin as follows.
+Profiles are essential for Volatility v2 to interpret the memory data correctly (profile identification has been enhanced in v3). To determine the profile that matches the operating system of the memory dump we can use the `imageinfo` plugin as follows.
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py -f /home/htb-student/MemoryDumps/Win7-2515534d.vmem imageinfo                                                                   Volatility Foundation Volatility Framework 2.6.1
@@ -361,11 +356,11 @@ INFO    : volatility.debug    : Determining profile based on KDBG search...
      Image local date and time : 2023-06-22 18:04:03 +0530
 ```
 
-#### Identifying Running Processes
+**Identifying Running Processes**
 
-Let's see if the suggested `Win7SP1x64` profile is correct by trying to list running process via the `pslist` plugin.
+Let's see if the suggested `Win7SP1x64` profile is correct by trying to list running process via the `pslist` plugin.
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py -f /home/htb-student/MemoryDumps/Win7-2515534d.vmem --profile=Win7SP1x64 pslist
@@ -437,11 +432,11 @@ Offset(V)          Name                    PID   PPID   Thds     Hnds   Sess  Wo
 
 It should be noted that even if we specify another profile from the suggested list Volatility may still provide us with the correct output.
 
-#### Identifying Network Artifacts
+**Identifying Network Artifacts**
 
-The `netscan` plugin can be used to scan for network artifacts as follows.
+The `netscan` plugin can be used to scan for network artifacts as follows.
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py -f /home/htb-student/MemoryDumps/Win7-2515534d.vmem --profile=Win7SP1x64 netscan
@@ -506,13 +501,13 @@ Offset(P)          Proto    Local Address                  Foreign Address      
 0x3fe604f0         TCPv4    127.0.0.1:9050                 127.0.0.1:55206      ESTABLISHED      -1
 ```
 
-To find `_TCPT_OBJECT` structures using pool tag scanning, use the `connscan` command. This can find artifacts from previous connections that have since been terminated, in addition to the active ones.
+To find `_TCPT_OBJECT` structures using pool tag scanning, use the `connscan` command. This can find artifacts from previous connections that have since been terminated, in addition to the active ones.
 
-#### Identifying Injected Code
+**Identifying Injected Code**
 
-The `malfind` plugin can be used to identify and extract injected code and malicious payloads from the memory of a running process as follows.
+The `malfind` plugin can be used to identify and extract injected code and malicious payloads from the memory of a running process as follows.
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py -f /home/htb-student/MemoryDumps/Win7-2515534d.vmem --profile=Win7SP1x64 malfind --pid=608
@@ -562,11 +557,11 @@ Flags: CommitCharge: 128, MemCommit: 1, PrivateMemory: 1, Protection: 6
 0x000000001235003e 0000             ADD [EAX], AL
 ```
 
-#### Identifying Handles
+**Identifying Handles**
 
-The `handles` plugin in Volatility is used for analyzing the handles (file and object references) held by a specific process within a memory dump. Understanding the handles associated with a process can provide valuable insights during incident response and digital forensics investigations, as it reveals the resources and objects a process is interacting with. Here's how to use the handles plugin.
+The `handles` plugin in Volatility is used for analyzing the handles (file and object references) held by a specific process within a memory dump. Understanding the handles associated with a process can provide valuable insights during incident response and digital forensics investigations, as it reveals the resources and objects a process is interacting with. Here's how to use the handles plugin.
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py -f /home/htb-student/MemoryDumps/Win7-2515534d.vmem --profile=Win7SP1x64 handles -p 1512 --object-type=Key
@@ -604,7 +599,7 @@ Offset(V)             Pid             Handle             Access Type            
 0xfffff8a0023dcdd0   1512              0x22c            0xf003f Key              MACHINE\SOFTWARE\CLASSES
 ```
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py -f /home/htb-student/MemoryDumps/Win7-2515534d.vmem --profile=Win7SP1x64 handles -p 1512 --object-type=File
@@ -621,7 +616,7 @@ Offset(V)             Pid             Handle             Access Type            
 0xfffffa8002f70700   1512              0x23c           0x120089 File             \Device\HarddiskVolume2\Windows\Registration\R000000000006.clb
 ```
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py -f /home/htb-student/MemoryDumps/Win7-2515534d.vmem --profile=Win7SP1x64 handles -p 1512 --object-type=Process
@@ -633,11 +628,11 @@ Offset(V)             Pid             Handle             Access Type            
 0xfffffa8001d0f8b0   1512              0x29c           0x1fffff Process          tasksche.exe(2972)
 ```
 
-#### Identifying Windows Services
+**Identifying Windows Services**
 
-The `svcscan` plugin in Volatility is used for listing and analyzing Windows services running on a system within a memory dump. Here's how to use the `svcscan` plugin.
+The `svcscan` plugin in Volatility is used for listing and analyzing Windows services running on a system within a memory dump. Here's how to use the `svcscan` plugin.
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py -f /home/htb-student/MemoryDumps/Win7-2515534d.vmem --profile=Win7SP1x64 svcscan | more
@@ -686,11 +681,11 @@ Binary Path: \Driver\CSC
 ---SNIP---
 ```
 
-#### Identifying Loaded DLLs
+**Identifying Loaded DLLs**
 
-The `dlllist` plugin in Volatility is used for listing the dynamic link libraries (DLLs) loaded into the address space of a specific process within a memory dump. Here's how to use the `dlllist` plugin.
+The `dlllist` plugin in Volatility is used for listing the dynamic link libraries (DLLs) loaded into the address space of a specific process within a memory dump. Here's how to use the `dlllist` plugin.
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py -f /home/htb-student/MemoryDumps/Win7-2515534d.vmem --profile=Win7SP1x64 dlllist -p 1512
@@ -767,11 +762,11 @@ Base                             Size          LoadCount LoadTime               
 0x000000006ced0000            0x4c000             0xffff 2023-06-22 12:31:13 UTC+0000   C:\Windows\system32\apphelp.dll
 ```
 
-#### Identifying Hives
+**Identifying Hives**
 
-The `hivelist` plugin in Volatility is used for listing the hives (registry files) present in the memory dump of a Windows system. Here's how to use the hivelist plugin.
+The `hivelist` plugin in Volatility is used for listing the hives (registry files) present in the memory dump of a Windows system. Here's how to use the hivelist plugin.
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py -f /home/htb-student/MemoryDumps/Win7-2515534d.vmem --profile=Win7SP1x64 hivelist
@@ -795,47 +790,47 @@ Virtual            Physical           Name
 0xfffff8a0016a8010 0x000000002aecd010 \??\C:\Users\Analyst\ntuser.dat
 ```
 
----
+***
 
-## Rootkit Analysis with Volatility v2
+### Rootkit Analysis with Volatility v2
 
-Let's now see a demonstration of utilizing `Volatility v2` to analyze a memory dump saved as `rootkit.vmem` inside the `/home/htb-student/MemoryDumps` directory of this section's target.
+Let's now see a demonstration of utilizing `Volatility v2` to analyze a memory dump saved as `rootkit.vmem` inside the `/home/htb-student/MemoryDumps` directory of this section's target.
 
-#### Understanding the EPROCESS Structure
+**Understanding the EPROCESS Structure**
 
-[EPROCESS](https://www.nirsoft.net/kernel_struct/vista/EPROCESS.html) is a data structure in the Windows kernel that represents a process. Each running process in the Windows operating system has a corresponding `EPROCESS` block in kernel memory. During memory analysis, the examination of `EPROCESS` structures is crucial for understanding the running processes on a system, identifying parent-child relationships, and determining which processes were active at the time of the memory capture.
+[EPROCESS](https://www.nirsoft.net/kernel_struct/vista/EPROCESS.html) is a data structure in the Windows kernel that represents a process. Each running process in the Windows operating system has a corresponding `EPROCESS` block in kernel memory. During memory analysis, the examination of `EPROCESS` structures is crucial for understanding the running processes on a system, identifying parent-child relationships, and determining which processes were active at the time of the memory capture.
 
-![WinDbg interface showing _EPROCESS structure with highlighted 'ActiveProcessLinks' field, indicating a list entry.](https://academy.hackthebox.com/storage/modules/237/dfir_mem_eprocess.png)
+![WinDbg interface showing \_EPROCESS structure with highlighted 'ActiveProcessLinks' field, indicating a list entry.](https://academy.hackthebox.com/storage/modules/237/dfir_mem_eprocess.png)
 
-#### FLINK and BLINK
+**FLINK and BLINK**
 
 A doubly-linked list is a fundamental data structure in computer science and programming. It is a type of linked list where each node (record) contains two references or pointers:
 
-- **Next Pointer**: This points to the next node in the list, allowing us to traverse the list in a forward direction.
-- **Previous Pointer**: This points to the previous node in the list, allowing us to traverse the list in a backward direction.
+* **Next Pointer**: This points to the next node in the list, allowing us to traverse the list in a forward direction.
+* **Previous Pointer**: This points to the previous node in the list, allowing us to traverse the list in a backward direction.
 
-Within the `EPROCESS` structure, we have `ActiveProcessLinks` as the doubly-linked list which contains the `flink` field and the `blink` field.
+Within the `EPROCESS` structure, we have `ActiveProcessLinks` as the doubly-linked list which contains the `flink` field and the `blink` field.
 
-- **flink**: Is a forward pointer that points to the `ActiveProcessLinks` list entry of the `_next_ EPROCESS` structure in the list of active processes.
-- **blink**: Is a backward pointer within the `EPROCESS` structure that points to the `ActiveProcessLinks` list entry of the `_previous_ EPROCESS` structure in the list of active processes.
+* **flink**: Is a forward pointer that points to the `ActiveProcessLinks` list entry of the `_next_ EPROCESS` structure in the list of active processes.
+* **blink**: Is a backward pointer within the `EPROCESS` structure that points to the `ActiveProcessLinks` list entry of the `_previous_ EPROCESS` structure in the list of active processes.
 
 These linked lists of EPROCESS structures are used by the Windows kernel to quickly iterate through all running processes on the system. The below diagram shows how this linked list looks like.
 
-![Diagram showing _EPROCESS structures for powershell.exe, RuntimeBroker.exe, and dllhost.exe, highlighting _LIST_ENTRY with Flink and Blink pointers linking processes.](https://academy.hackthebox.com/storage/modules/237/dfir_mem_dcom1.png)
+![Diagram showing \_EPROCESS structures for powershell.exe, RuntimeBroker.exe, and dllhost.exe, highlighting \_LIST\_ENTRY with Flink and Blink pointers linking processes.](https://academy.hackthebox.com/storage/modules/237/dfir_mem_dcom1.png)
 
-#### Identifying Rootkit Signs
+**Identifying Rootkit Signs**
 
-`Direct Kernel Object Manipulation (DKOM)` is a sophisticated technique used by rootkits and advanced malware to manipulate the Windows operating system's kernel data structures in order to hide malicious processes, drivers, files, and other artifacts from detection by security tools and utilities running in userland (i.e., in user mode).
+`Direct Kernel Object Manipulation (DKOM)` is a sophisticated technique used by rootkits and advanced malware to manipulate the Windows operating system's kernel data structures in order to hide malicious processes, drivers, files, and other artifacts from detection by security tools and utilities running in userland (i.e., in user mode).
 
-If, for example, a monitoring tool is dependent on the `EPROCESS` structure for the enumeration of the running processes, and there's a rootkit running on the system which manipulates the `EPROCESS` structure directly in kernel memory by altering the `EPROCESS` structure or unlinking a process from lists, the monitoring tool will not be able to get the hidden process in the currently running processes list.
+If, for example, a monitoring tool is dependent on the `EPROCESS` structure for the enumeration of the running processes, and there's a rootkit running on the system which manipulates the `EPROCESS` structure directly in kernel memory by altering the `EPROCESS` structure or unlinking a process from lists, the monitoring tool will not be able to get the hidden process in the currently running processes list.
 
 The below screenshot shows a graphical representation of how this unlinking actually works.
 
-![Diagram showing _EPROCESS structures with _LIST_ENTRY, illustrating normal and DKOM (Direct Kernel Object Manipulation) process linking using Flink and Blink pointers.](https://academy.hackthebox.com/storage/modules/237/dfir_mem_dcom.png)
+![Diagram showing \_EPROCESS structures with \_LIST\_ENTRY, illustrating normal and DKOM (Direct Kernel Object Manipulation) process linking using Flink and Blink pointers.](https://academy.hackthebox.com/storage/modules/237/dfir_mem_dcom.png)
 
-The `psscan` plugin is used to enumerate running processes. It scans the memory pool tags associated with each process's `EPROCESS` structure. This technique can help identify processes that may have been hidden or unlinked by rootkits, as well as processes that have been terminated but have not been removed from memory yet. This plugin can be used as follows.
+The `psscan` plugin is used to enumerate running processes. It scans the memory pool tags associated with each process's `EPROCESS` structure. This technique can help identify processes that may have been hidden or unlinked by rootkits, as well as processes that have been terminated but have not been removed from memory yet. This plugin can be used as follows.
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py -f /home/htb-student/MemoryDumps/rootkit.vmem psscan
@@ -881,9 +876,9 @@ Offset(P)          Name                PID   PPID PDB        Time created       
 0x00000000025c8830 System                4      0 0x0031c000
 ```
 
-In the output below, we can see that the `pslist` plugin could not find `test.exe` which was hidden by a rootkit, but the `psscan` plugin was able to find it.
+In the output below, we can see that the `pslist` plugin could not find `test.exe` which was hidden by a rootkit, but the `psscan` plugin was able to find it.
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ vol.py -f /home/htb-student/MemoryDumps/rootkit.vmem pslist
@@ -923,19 +918,19 @@ Offset(V)  Name                    PID   PPID   Thds     Hnds   Sess  Wow64 Star
 0x818404b8 ipconfig.exe           2988   2980      0 --------      0      0 2023-06-24 07:31:16 UTC+0000   2023-06-24 07:31:17 UTC+0000
 ```
 
----
+***
 
-## Memory Analysis Using Strings
+### Memory Analysis Using Strings
 
 Analyzing strings in memory dumps is a valuable technique in memory forensics and incident response. Strings often contain human-readable information, such as text messages, file paths, IP addresses, and even passwords.
 
-We can either use the [Strings](https://learn.microsoft.com/en-us/sysinternals/downloads/strings) tool from the Sysinternals suite if our system is Windows-based, or the `strings` command from `Binutils`, if our system is Linux-based.
+We can either use the [Strings](https://learn.microsoft.com/en-us/sysinternals/downloads/strings) tool from the Sysinternals suite if our system is Windows-based, or the `strings` command from `Binutils`, if our system is Linux-based.
 
-Let's see some examples against a memory dump named `Win7-2515534d.vmem` that resides in the `/home/htb-student/MemoryDumps` directory of this section's target.
+Let's see some examples against a memory dump named `Win7-2515534d.vmem` that resides in the `/home/htb-student/MemoryDumps` directory of this section's target.
 
-#### Identifying IPv4 Addresses
+**Identifying IPv4 Addresses**
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ strings /home/htb-student/MemoryDumps/Win7-2515534d.vmem | grep -E "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b"
@@ -949,9 +944,9 @@ directory server at 10.10.10.1:52860
 ---SNIP---
 ```
 
-#### Identifying Email Addresses
+**Identifying Email Addresses**
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ strings /home/htb-student/MemoryDumps/Win7-2515534d.vmem | grep -oE "\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}\b"
@@ -1012,9 +1007,9 @@ support@hex-rays.com
 ---SNIP---
 ```
 
-#### Identifying Command Prompt or PowerShell Artifacts
+**Identifying Command Prompt or PowerShell Artifacts**
 
-  Memory Forensics
+&#x20; Memory Forensics
 
 ```shell-session
 LeDaav@htb[/htb]$ strings /home/htb-student/MemoryDumps/Win7-2515534d.vmem | grep -E "(cmd|powershell|bash)[^\s]+"

@@ -1,8 +1,10 @@
-## Enumerating the Password Policy - from Linux - Credentialed
+# Enumerating & Retrieving Password Policies
 
-As stated in the previous section, we can pull the domain password policy in several ways, depending on how the domain is configured and whether or not we have valid domain credentials. With valid domain credentials, the password policy can also be obtained remotely using tools such as [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec) or `rpcclient`.
+### Enumerating the Password Policy - from Linux - Credentialed
 
-  Enumerating & Retrieving Password Policies
+As stated in the previous section, we can pull the domain password policy in several ways, depending on how the domain is configured and whether or not we have valid domain credentials. With valid domain credentials, the password policy can also be obtained remotely using tools such as [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec) or `rpcclient`.
+
+&#x20; Enumerating & Retrieving Password Policies
 
 ```shell-session
 LeDaav@htb[/htb]$ crackmapexec smb 172.16.5.5 -u avazquez -p Password123 --pass-pol
@@ -29,21 +31,21 @@ SMB         172.16.5.5      445    ACADEMY-EA-DC01  Account Lockout Threshold: 5
 SMB         172.16.5.5      445    ACADEMY-EA-DC01  Forced Log off Time: Not Set
 ```
 
----
+***
 
-## Enumerating the Password Policy - from Linux - SMB NULL Sessions
+### Enumerating the Password Policy - from Linux - SMB NULL Sessions
 
 Without credentials, we may be able to obtain the password policy via an SMB NULL session or LDAP anonymous bind. The first is via an SMB NULL session. SMB NULL sessions allow an unauthenticated attacker to retrieve information from the domain, such as a complete listing of users, groups, computers, user account attributes, and the domain password policy. SMB NULL session misconfigurations are often the result of legacy Domain Controllers being upgraded in place, ultimately bringing along insecure configurations, which existed by default in older versions of Windows Server.
 
-When creating a domain in earlier versions of Windows Server, anonymous access was granted to certain shares, which allowed for domain enumeration. An SMB NULL session can be enumerated easily. For enumeration, we can use tools such as `enum4linux`, `CrackMapExec`, `rpcclient`, etc.
+When creating a domain in earlier versions of Windows Server, anonymous access was granted to certain shares, which allowed for domain enumeration. An SMB NULL session can be enumerated easily. For enumeration, we can use tools such as `enum4linux`, `CrackMapExec`, `rpcclient`, etc.
 
-We can use [rpcclient](https://www.samba.org/samba/docs/current/man-html/rpcclient.1.html) to check a Domain Controller for SMB NULL session access.
+We can use [rpcclient](https://www.samba.org/samba/docs/current/man-html/rpcclient.1.html) to check a Domain Controller for SMB NULL session access.
 
-Once connected, we can issue an RPC command such as `querydominfo` to obtain information about the domain and confirm NULL session access.
+Once connected, we can issue an RPC command such as `querydominfo` to obtain information about the domain and confirm NULL session access.
 
-#### Using rpcclient
+**Using rpcclient**
 
-  Enumerating & Retrieving Password Policies
+&#x20; Enumerating & Retrieving Password Policies
 
 ```shell-session
 LeDaav@htb[/htb]$ rpcclient -U "" -N 172.16.5.5
@@ -64,9 +66,9 @@ Unknown 3:	0x1
 
 We can also obtain the password policy. We can see that the password policy is relatively weak, allowing a minimum password of 8 characters.
 
-#### Obtaining the Password Policy using rpcclient
+**Obtaining the Password Policy using rpcclient**
 
-  Enumerating & Retrieving Password Policies
+&#x20; Enumerating & Retrieving Password Policies
 
 ```shell-session
 rpcclient $> querydominfo
@@ -88,21 +90,21 @@ password_properties: 0x00000001
 	DOMAIN_PASSWORD_COMPLEX
 ```
 
----
+***
 
-Let's try this using [enum4linux](https://labs.portcullis.co.uk/tools/enum4linux). `enum4linux` is a tool built around the [Samba suite of tools](https://www.samba.org/samba/docs/current/man-html/samba.7.html) `nmblookup`, `net`, `rpcclient` and `smbclient` to use for enumeration of windows hosts and domains. It can be found pre-installed on many different penetration testing distros, including Parrot Security Linux. Below we have an example output displaying information that can be provided by `enum4linux`. Here are some common enumeration tools and the ports they use:
+Let's try this using [enum4linux](https://labs.portcullis.co.uk/tools/enum4linux). `enum4linux` is a tool built around the [Samba suite of tools](https://www.samba.org/samba/docs/current/man-html/samba.7.html) `nmblookup`, `net`, `rpcclient` and `smbclient` to use for enumeration of windows hosts and domains. It can be found pre-installed on many different penetration testing distros, including Parrot Security Linux. Below we have an example output displaying information that can be provided by `enum4linux`. Here are some common enumeration tools and the ports they use:
 
-|Tool|Ports|
-|---|---|
-|nmblookup|137/UDP|
-|nbtstat|137/UDP|
-|net|139/TCP, 135/TCP, TCP and UDP 135 and 49152-65535|
-|rpcclient|135/TCP|
-|smbclient|445/TCP|
+| Tool      | Ports                                             |
+| --------- | ------------------------------------------------- |
+| nmblookup | 137/UDP                                           |
+| nbtstat   | 137/UDP                                           |
+| net       | 139/TCP, 135/TCP, TCP and UDP 135 and 49152-65535 |
+| rpcclient | 135/TCP                                           |
+| smbclient | 445/TCP                                           |
 
-#### Using enum4linux
+**Using enum4linux**
 
-  Enumerating & Retrieving Password Policies
+&#x20; Enumerating & Retrieving Password Policies
 
 ```shell-session
 LeDaav@htb[/htb]$ enum4linux -P 172.16.5.5
@@ -152,11 +154,11 @@ Minimum Password Length: 8
 enum4linux complete on Tue Feb 22 17:39:29 2022
 ```
 
-The tool [enum4linux-ng](https://github.com/cddmp/enum4linux-ng) is a rewrite of `enum4linux` in Python, but has additional features such as the ability to export data as YAML or JSON files which can later be used to process the data further or feed it to other tools. It also supports colored output, among other features
+The tool [enum4linux-ng](https://github.com/cddmp/enum4linux-ng) is a rewrite of `enum4linux` in Python, but has additional features such as the ability to export data as YAML or JSON files which can later be used to process the data further or feed it to other tools. It also supports colored output, among other features
 
-#### Using enum4linux-ng
+**Using enum4linux-ng**
 
-  Enumerating & Retrieving Password Policies
+&#x20; Enumerating & Retrieving Password Policies
 
 ```shell-session
 LeDaav@htb[/htb]$ enum4linux-ng -P 172.16.5.5 -oA ilfreight
@@ -216,11 +218,11 @@ domain_logoff_information:
 Completed after 5.41 seconds
 ```
 
-Enum4linux-ng provided us with a bit clearer output and handy JSON and YAML output using the `-oA` flag.
+Enum4linux-ng provided us with a bit clearer output and handy JSON and YAML output using the `-oA` flag.
 
-#### Displaying the contents of ilfreight.json
+**Displaying the contents of ilfreight.json**
 
-  Enumerating & Retrieving Password Policies
+&#x20; Enumerating & Retrieving Password Policies
 
 ```shell-session
 LeDaav@htb[/htb]$ cat ilfreight.json 
@@ -260,13 +262,13 @@ LeDaav@htb[/htb]$ cat ilfreight.json
 <SNIP>
 ```
 
-## Enumerating Null Session - from Windows
+### Enumerating Null Session - from Windows
 
-It is less common to do this type of null session attack from Windows, but we could use the command `net use \\host\ipc$ "" /u:""` to establish a null session from a windows machine and confirm if we can perform more of this type of attack.
+It is less common to do this type of null session attack from Windows, but we could use the command `net use \\host\ipc$ "" /u:""` to establish a null session from a windows machine and confirm if we can perform more of this type of attack.
 
-#### Establish a null session from windows
+**Establish a null session from windows**
 
-  Enumerating & Retrieving Password Policies
+&#x20; Enumerating & Retrieving Password Policies
 
 ```cmd-session
 C:\htb> net use \\DC01\ipc$ "" /u:""
@@ -275,9 +277,9 @@ The command completed successfully.
 
 We can also use a username/password combination to attempt to connect. Let's see some common errors when trying to authenticate:
 
-#### Error: Account is Disabled
+**Error: Account is Disabled**
 
-  Enumerating & Retrieving Password Policies
+&#x20; Enumerating & Retrieving Password Policies
 
 ```cmd-session
 C:\htb> net use \\DC01\ipc$ "" /u:guest
@@ -286,9 +288,9 @@ System error 1331 has occurred.
 This user can't sign in because this account is currently disabled.
 ```
 
-#### Error: Password is Incorrect
+**Error: Password is Incorrect**
 
-  Enumerating & Retrieving Password Policies
+&#x20; Enumerating & Retrieving Password Policies
 
 ```cmd-session
 C:\htb> net use \\DC01\ipc$ "password" /u:guest
@@ -297,9 +299,9 @@ System error 1326 has occurred.
 The user name or password is incorrect.
 ```
 
-#### Error: Account is locked out (Password Policy)
+**Error: Account is locked out (Password Policy)**
 
-  Enumerating & Retrieving Password Policies
+&#x20; Enumerating & Retrieving Password Policies
 
 ```cmd-session
 C:\htb> net use \\DC01\ipc$ "password" /u:guest
@@ -308,15 +310,15 @@ System error 1909 has occurred.
 The referenced account is currently locked out and may not be logged on to.
 ```
 
-## Enumerating the Password Policy - from Linux - LDAP Anonymous Bind
+### Enumerating the Password Policy - from Linux - LDAP Anonymous Bind
 
-[LDAP anonymous binds](https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/anonymous-ldap-operations-active-directory-disabled) allow unauthenticated attackers to retrieve information from the domain, such as a complete listing of users, groups, computers, user account attributes, and the domain password policy. This is a legacy configuration, and as of Windows Server 2003, only authenticated users are permitted to initiate LDAP requests. We still see this configuration from time to time as an admin may have needed to set up a particular application to allow anonymous binds and given out more than the intended amount of access, thereby giving unauthenticated users access to all objects in AD.
+[LDAP anonymous binds](https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/anonymous-ldap-operations-active-directory-disabled) allow unauthenticated attackers to retrieve information from the domain, such as a complete listing of users, groups, computers, user account attributes, and the domain password policy. This is a legacy configuration, and as of Windows Server 2003, only authenticated users are permitted to initiate LDAP requests. We still see this configuration from time to time as an admin may have needed to set up a particular application to allow anonymous binds and given out more than the intended amount of access, thereby giving unauthenticated users access to all objects in AD.
 
-With an LDAP anonymous bind, we can use LDAP-specific enumeration tools such as `windapsearch.py`, `ldapsearch`, `ad-ldapdomaindump.py`, etc., to pull the password policy. With [ldapsearch](https://linux.die.net/man/1/ldapsearch), it can be a bit cumbersome but doable. One example command to get the password policy is as follows:
+With an LDAP anonymous bind, we can use LDAP-specific enumeration tools such as `windapsearch.py`, `ldapsearch`, `ad-ldapdomaindump.py`, etc., to pull the password policy. With [ldapsearch](https://linux.die.net/man/1/ldapsearch), it can be a bit cumbersome but doable. One example command to get the password policy is as follows:
 
-#### Using ldapsearch
+**Using ldapsearch**
 
-  Enumerating & Retrieving Password Policies
+&#x20; Enumerating & Retrieving Password Policies
 
 ```shell-session
 LeDaav@htb[/htb]$ ldapsearch -h 172.16.5.5 -x -b "DC=INLANEFREIGHT,DC=LOCAL" -s sub "*" | grep -m 1 -B 10 pwdHistoryLength
@@ -334,21 +336,21 @@ pwdProperties: 1
 pwdHistoryLength: 24
 ```
 
-Note: In newer versions of `ldapsearch`, the `-h` parameter was deprecated in favor for `-H`.
+Note: In newer versions of `ldapsearch`, the `-h` parameter was deprecated in favor for `-H`.
 
-Here we can see the minimum password length of 8, lockout threshold of 5, and password complexity is set (`pwdProperties` set to `1`).
+Here we can see the minimum password length of 8, lockout threshold of 5, and password complexity is set (`pwdProperties` set to `1`).
 
----
+***
 
-## Enumerating the Password Policy - from Windows
+### Enumerating the Password Policy - from Windows
 
-If we can authenticate to the domain from a Windows host, we can use built-in Windows binaries such as `net.exe` to retrieve the password policy. We can also use various tools such as PowerView, CrackMapExec ported to Windows, SharpMapExec, SharpView, etc.
+If we can authenticate to the domain from a Windows host, we can use built-in Windows binaries such as `net.exe` to retrieve the password policy. We can also use various tools such as PowerView, CrackMapExec ported to Windows, SharpMapExec, SharpView, etc.
 
 Using built-in commands is helpful if we land on a Windows system and cannot transfer tools to it, or we are positioned on a Windows system by the client, but have no way of getting tools onto it. One example using the built-in net.exe binary is:
 
-#### Using net.exe
+**Using net.exe**
 
-  Enumerating & Retrieving Password Policies
+&#x20; Enumerating & Retrieving Password Policies
 
 ```cmd-session
 C:\htb> net accounts
@@ -367,18 +369,18 @@ The command completed successfully.
 
 Here we can glean the following information:
 
-- Passwords never expire (Maximum password age set to Unlimited)
-- The minimum password length is 8 so weak passwords are likely in use
-- The lockout threshold is 5 wrong passwords
-- Accounts remained locked out for 30 minutes
+* Passwords never expire (Maximum password age set to Unlimited)
+* The minimum password length is 8 so weak passwords are likely in use
+* The lockout threshold is 5 wrong passwords
+* Accounts remained locked out for 30 minutes
 
-This password policy is excellent for password spraying. The eight-character minimum means that we can try common weak passwords such as `Welcome1`. The lockout threshold of 5 means that we can attempt 2-3 (to be safe) sprays every 31 minutes without the risk of locking out any accounts. If an account has been locked out, it will automatically unlock (without manual intervention from an admin) after 30 minutes, but we should avoid locking out `ANY` accounts at all costs.
+This password policy is excellent for password spraying. The eight-character minimum means that we can try common weak passwords such as `Welcome1`. The lockout threshold of 5 means that we can attempt 2-3 (to be safe) sprays every 31 minutes without the risk of locking out any accounts. If an account has been locked out, it will automatically unlock (without manual intervention from an admin) after 30 minutes, but we should avoid locking out `ANY` accounts at all costs.
 
 PowerView is also quite handy for this:
 
-#### Using PowerView
+**Using PowerView**
 
-  Enumerating & Retrieving Password Policies
+&#x20; Enumerating & Retrieving Password Policies
 
 ```powershell-session
 PS C:\htb> import-module .\PowerView.ps1
@@ -398,34 +400,34 @@ GPOName        : {31B2F340-016D-11D2-945F-00C04FB984F9}
 GPODisplayName : Default Domain Policy
 ```
 
-PowerView gave us the same output as our `net accounts` command, just in a different format but also revealed that password complexity is enabled (`PasswordComplexity=1`).
+PowerView gave us the same output as our `net accounts` command, just in a different format but also revealed that password complexity is enabled (`PasswordComplexity=1`).
 
 As with Linux, we have many tools at our disposal to retrieve the password policy while on a Windows system, whether it is our attack system or a system provided by the client. PowerView/SharpView are always good bets, as are CrackMapExec, SharpMapExec, and others. The choice of tools depends on the goal of the assessment, stealth considerations, any anti-virus or EDR in place, and other potential restrictions on the target host. Let's cover a few examples.
 
----
+***
 
-## Analyzing the Password Policy
+### Analyzing the Password Policy
 
 We've now pulled the password policy in numerous ways. Let's go through the policy for the INLANEFREIGHT.LOCAL domain piece by piece.
 
-- The minimum password length is 8 (8 is very common, but nowadays, we are seeing more and more organizations enforce a 10-14 character password, which can remove some password options for us, but does not mitigate the password spraying vector completely)
-- The account lockout threshold is 5 (it is not uncommon to see a lower threshold such as 3 or even no lockout threshold set at all)
-- The lockout duration is 30 minutes (this may be higher or lower depending on the organization), so if we do accidentally lockout (avoid!!) an account, it will unlock after the 30-minute window passes
-- Accounts unlock automatically (in some organizations, an admin must manually unlock the account). We never want to lockout accounts while performing password spraying, but we especially want to avoid locking out accounts in an organization where an admin would have to intervene and unlock hundreds (or thousands) of accounts by hand/script
-- Password complexity is enabled, meaning that a user must choose a password with 3/4 of the following: an uppercase letter, lowercase letter, number, special character (`Password1` or `Welcome1` would satisfy the "complexity" requirement here, but are still clearly weak passwords).
+* The minimum password length is 8 (8 is very common, but nowadays, we are seeing more and more organizations enforce a 10-14 character password, which can remove some password options for us, but does not mitigate the password spraying vector completely)
+* The account lockout threshold is 5 (it is not uncommon to see a lower threshold such as 3 or even no lockout threshold set at all)
+* The lockout duration is 30 minutes (this may be higher or lower depending on the organization), so if we do accidentally lockout (avoid!!) an account, it will unlock after the 30-minute window passes
+* Accounts unlock automatically (in some organizations, an admin must manually unlock the account). We never want to lockout accounts while performing password spraying, but we especially want to avoid locking out accounts in an organization where an admin would have to intervene and unlock hundreds (or thousands) of accounts by hand/script
+* Password complexity is enabled, meaning that a user must choose a password with 3/4 of the following: an uppercase letter, lowercase letter, number, special character (`Password1` or `Welcome1` would satisfy the "complexity" requirement here, but are still clearly weak passwords).
 
 The default password policy when a new domain is created is as follows, and there have been plenty of organizations that never changed this policy:
 
-|Policy|Default Value|
-|---|---|
-|Enforce password history|24 days|
-|Maximum password age|42 days|
-|Minimum password age|1 day|
-|Minimum password length|7|
-|Password must meet complexity requirements|Enabled|
-|Store passwords using reversible encryption|Disabled|
-|Account lockout duration|Not set|
-|Account lockout threshold|0|
-|Reset account lockout counter after|Not set|
+| Policy                                      | Default Value |
+| ------------------------------------------- | ------------- |
+| Enforce password history                    | 24 days       |
+| Maximum password age                        | 42 days       |
+| Minimum password age                        | 1 day         |
+| Minimum password length                     | 7             |
+| Password must meet complexity requirements  | Enabled       |
+| Store passwords using reversible encryption | Disabled      |
+| Account lockout duration                    | Not set       |
+| Account lockout threshold                   | 0             |
+| Reset account lockout counter after         | Not set       |
 
----
+***

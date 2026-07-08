@@ -1,13 +1,14 @@
+# Developing Yara Rules
 
 In this section, we'll cover manual and automated YARA rule development.
 
 Let's now navigate to the bottom of this section and click on "Click here to spawn the target system!". Then, let's SSH into the Target IP using the provided credentials. The vast majority of the actions/commands covered from this point up to end of this section can be replicated inside the target, offering a more comprehensive grasp of the topics presented.
 
-Let's dive into the world of YARA rules using a sample named `svchost.exe` residing in the `/home/htb-student/Samples/YARASigma` directory of this section's target as an illustration. We want to understand the process behind crafting a YARA rule, so let's get our hands dirty.
+Let's dive into the world of YARA rules using a sample named `svchost.exe` residing in the `/home/htb-student/Samples/YARASigma` directory of this section's target as an illustration. We want to understand the process behind crafting a YARA rule, so let's get our hands dirty.
 
 Initially, we need to conduct a string analysis on our malware sample.
 
-  Developing YARA Rules
+&#x20; Developing YARA Rules
 
 ```shell-session
 LeDaav@htb[/htb]$ strings svchost.exe
@@ -41,7 +42,7 @@ exit
 
 From the first few strings, it becomes evident that the file is packed using the UPX (Ultimate Packer for eXecutables) packer. Given this discovery, we can incorporate UPX-related strings to formulate a basic YARA rule targeting samples packed via UPX.
 
-Code: yara
+Code: yara
 
 ```yara
 rule UPX_packed_executable
@@ -61,24 +62,24 @@ rule UPX_packed_executable
 
 Here's a brief breakdown of our YARA rule crafted for detecting UPX-packed executables:
 
-- `Rule Name`: `UPX_packed_executable`
-- `Meta Description`: Provides a description of the rule, stating that it detects UPX-packed executables.
-- `Strings Section`: `strings` defines the strings that the rule will search for within the files.
-    - `$string_1` = "UPX0": Matches the string `UPX0` within the file.
-    - `$string_2` = "UPX1": Matches the string `UPX1` within the file.
-    - `$string_3` = "UPX2": Matches the string `UPX2` within the file.
-- `Condition`: `condition` specifies the criteria that must be met for the rule to trigger a match.
-    - `all of them`: Specifies that all the defined strings (`$string_1`, `$string_2`, and `$string_3`) must be found within the file.
+* `Rule Name`: `UPX_packed_executable`
+* `Meta Description`: Provides a description of the rule, stating that it detects UPX-packed executables.
+* `Strings Section`: `strings` defines the strings that the rule will search for within the files.
+  * `$string_1` = "UPX0": Matches the string `UPX0` within the file.
+  * `$string_2` = "UPX1": Matches the string `UPX1` within the file.
+  * `$string_3` = "UPX2": Matches the string `UPX2` within the file.
+* `Condition`: `condition` specifies the criteria that must be met for the rule to trigger a match.
+  * `all of them`: Specifies that all the defined strings (`$string_1`, `$string_2`, and `$string_3`) must be found within the file.
 
-In essence, our `UPX_packed_executable` rule (located inside this section's target at `/home/htb-student/Rules/yara/upx_packed.yar`) scans for the strings `UPX0`, `UPX1`, and `UPX2` inside a file. If the rule finds all three strings, it raises an alert, hinting that the file might be packed with the UPX packer. This rule is a handy tool when we're on the lookout for executables that have undergone compression or obfuscation using the UPX method.
+In essence, our `UPX_packed_executable` rule (located inside this section's target at `/home/htb-student/Rules/yara/upx_packed.yar`) scans for the strings `UPX0`, `UPX1`, and `UPX2` inside a file. If the rule finds all three strings, it raises an alert, hinting that the file might be packed with the UPX packer. This rule is a handy tool when we're on the lookout for executables that have undergone compression or obfuscation using the UPX method.
 
-## Developing a YARA Rule Through yarGen
+### Developing a YARA Rule Through yarGen
 
-Let's continue our dive into the world of YARA rules using a sample named `dharma_sample.exe` residing in the `/home/htb-student/Samples/YARASigma` directory of this section's target.
+Let's continue our dive into the world of YARA rules using a sample named `dharma_sample.exe` residing in the `/home/htb-student/Samples/YARASigma` directory of this section's target.
 
 Once again, we need to conduct a string analysis on our malware sample.
 
-  Developing YARA Rules
+&#x20; Developing YARA Rules
 
 ```shell-session
 LeDaav@htb[/htb]$ strings dharma_sample.exe
@@ -112,22 +113,22 @@ C:\crysis\Release\PDB\payload.pdb
 ---SNIP---
 ```
 
-After we execute the `strings` command on `dharma_sample.exe`, we spot `C:\crysis\Release\PDB\payload.pdb`, which is pretty unique. Alongside other distinct strings, we can craft a more refined YARA rule. Let's employ `yarGen` to expedite this process.
+After we execute the `strings` command on `dharma_sample.exe`, we spot `C:\crysis\Release\PDB\payload.pdb`, which is pretty unique. Alongside other distinct strings, we can craft a more refined YARA rule. Let's employ `yarGen` to expedite this process.
 
-[yarGen](https://github.com/Neo23x0/yarGen) is our go-to tool when we need an automatic YARA rule generator. What makes it a gem is its ability to churn out YARA rules based on strings found in malicious files while sidestepping strings common in benign software. This is possible because yarGen comes equipped with a vast database of goodware strings and opcodes. Before diving in, we need to unpack the ZIP archives containing these databases.
+[yarGen](https://github.com/Neo23x0/yarGen) is our go-to tool when we need an automatic YARA rule generator. What makes it a gem is its ability to churn out YARA rules based on strings found in malicious files while sidestepping strings common in benign software. This is possible because yarGen comes equipped with a vast database of goodware strings and opcodes. Before diving in, we need to unpack the ZIP archives containing these databases.
 
 Here's how we get yarGen up and running:
 
-- Download the latest release from the `release` section
-- Install all dependencies with `pip install -r requirements.txt`
-- Run `python yarGen.py --update` to automatically download the built-in databases. They will be saved into the './dbs' subfolder (Download: `913 MB`).
-- See help with `python yarGen.py --help` for more information on the command line parameters.
+* Download the latest release from the `release` section
+* Install all dependencies with `pip install -r requirements.txt`
+* Run `python yarGen.py --update` to automatically download the built-in databases. They will be saved into the './dbs' subfolder (Download: `913 MB`).
+* See help with `python yarGen.py --help` for more information on the command line parameters.
 
-**Note**: yarGen can be found inside the `/home/htb-student/yarGen-0.23.4` directory of this section's target.
+**Note**: yarGen can be found inside the `/home/htb-student/yarGen-0.23.4` directory of this section's target.
 
-Let's place our sample in a `temp` directory (there is one available at `/home/htb-student/temp` inside this section's target) and specify the path using the following command-line arguments.
+Let's place our sample in a `temp` directory (there is one available at `/home/htb-student/temp` inside this section's target) and specify the path using the following command-line arguments.
 
-  Developing YARA Rules
+&#x20; Developing YARA Rules
 
 ```shell-session
 LeDaav@htb[/htb]$ python3 yarGen.py -m /home/htb-student/temp -o htb_sample.yar
@@ -217,13 +218,13 @@ LeDaav@htb[/htb]$ python3 yarGen.py -m /home/htb-student/temp -o htb_sample.yar
 
 **Command Breakdown**:
 
-- `yarGen.py`: This is the name of the yarGen Python script that will be executed.
-- `-m /home/htb-student/temp`: This option specifies the source directory where the sample files (e.g., malware or suspicious files) are located. The script will analyze these samples to generate YARA rules.
-- `-o htb_sample.yar`: This option indicates the output file name for the generated YARA rules. In this case, the YARA rules will be saved to a file named `htb_sample.yar`.
+* `yarGen.py`: This is the name of the yarGen Python script that will be executed.
+* `-m /home/htb-student/temp`: This option specifies the source directory where the sample files (e.g., malware or suspicious files) are located. The script will analyze these samples to generate YARA rules.
+* `-o htb_sample.yar`: This option indicates the output file name for the generated YARA rules. In this case, the YARA rules will be saved to a file named `htb_sample.yar`.
 
-The resulting YARA rules will be written to the `htb_sample.yar` file inside the `/home/htb-student/yarGen-0.23.4` directory of this section's target. Let's see the content of the generated rule.
+The resulting YARA rules will be written to the `htb_sample.yar` file inside the `/home/htb-student/yarGen-0.23.4` directory of this section's target. Let's see the content of the generated rule.
 
-  Developing YARA Rules
+&#x20; Developing YARA Rules
 
 ```shell-session
 LeDaav@htb[/htb]$ cat htb_sample.yar
@@ -271,9 +272,9 @@ rule dharma_sample {
 }
 ```
 
-Now, for the moment of truth. We'll unleash YARA with our newly minted rule to see if it sniffs out any matches when run against a malware sample repository located at `home/htb-student/Samples/YARASigma` inside this section's target.
+Now, for the moment of truth. We'll unleash YARA with our newly minted rule to see if it sniffs out any matches when run against a malware sample repository located at `home/htb-student/Samples/YARASigma` inside this section's target.
 
-  Developing YARA Rules
+&#x20; Developing YARA Rules
 
 ```shell-session
 LeDaav@htb[/htb]$ yara htb_sample.yar /home/htb-student/Samples/YARASigma 
@@ -284,25 +285,25 @@ dharma_sample /home/htb-student/Samples/YARASigma/check_updates.exe
 dharma_sample /home/htb-student/Samples/YARASigma/KB5027505.exe
 ```
 
-As we can see, the `pdf_reader.exe`, `microsoft.com`, `check_updates.exe`, and `KB5027505.exe` files are detected by this rule (in addition to `dharma_sample.exe` of course).
+As we can see, the `pdf_reader.exe`, `microsoft.com`, `check_updates.exe`, and `KB5027505.exe` files are detected by this rule (in addition to `dharma_sample.exe` of course).
 
-## Manually Developing a YARA Rule
+### Manually Developing a YARA Rule
 
-#### Example 1: ZoxPNG RAT Used by APT17
+**Example 1: ZoxPNG RAT Used by APT17**
 
 Let's now go a bit deeper...
 
-We want to develop a YARA rule to scan for a specific variation of the `ZoxPNG` RAT used by `APT17` based on:
+We want to develop a YARA rule to scan for a specific variation of the `ZoxPNG` RAT used by `APT17` based on:
 
-- A sample named `legit.exe` residing in the `/home/htb-student/Samples/YARASigma` directory of this section's target
-- A [post from Intezer](https://intezer.com/blog/research/evidence-aurora-operation-still-active-part-2-more-ties-uncovered-between-ccleaner-hack-chinese-hackers-2/)
-- String analysis
-- Imphash
-- Common sample file size
+* A sample named `legit.exe` residing in the `/home/htb-student/Samples/YARASigma` directory of this section's target
+* A [post from Intezer](https://intezer.com/blog/research/evidence-aurora-operation-still-active-part-2-more-ties-uncovered-between-ccleaner-hack-chinese-hackers-2/)
+* String analysis
+* Imphash
+* Common sample file size
 
 Let's start with our string analysis endeavors as follows.
 
-  Developing YARA Rules
+&#x20; Developing YARA Rules
 
 ```shell-session
 LeDaav@htb[/htb]$ strings legit.exe
@@ -573,20 +574,20 @@ K%&J
 Eev7aSp
 ```
 
-Let's then use the hashes mentioned in Intezer's post to identify common sample sizes. It looks like there are no related samples whose size is bigger than 200KB. An example of an identified sample is the following. [https://www.hybrid-analysis.com/sample/ee362a8161bd442073775363bf5fa1305abac2ce39b903d63df0d7121ba60550](https://www.hybrid-analysis.com/sample/ee362a8161bd442073775363bf5fa1305abac2ce39b903d63df0d7121ba60550).
+Let's then use the hashes mentioned in Intezer's post to identify common sample sizes. It looks like there are no related samples whose size is bigger than 200KB. An example of an identified sample is the following. [https://www.hybrid-analysis.com/sample/ee362a8161bd442073775363bf5fa1305abac2ce39b903d63df0d7121ba60550](https://www.hybrid-analysis.com/sample/ee362a8161bd442073775363bf5fa1305abac2ce39b903d63df0d7121ba60550).
 
-Finally, the sample's Imphash can be calculated as follows, using the `imphash_calc.py` script that resides in the `/home/htb-student` directory of this section's target.
+Finally, the sample's Imphash can be calculated as follows, using the `imphash_calc.py` script that resides in the `/home/htb-student` directory of this section's target.
 
-  Developing YARA Rules
+&#x20; Developing YARA Rules
 
 ```shell-session
 LeDaav@htb[/htb]$ python3 imphash_calc.py /home/htb-student/Samples/YARASigma/legit.exe
 414bbd566b700ea021cfae3ad8f4d9b9
 ```
 
-A good YARA rule to detect the aforementioned variation of ZoxPNG resides in the `/home/htb-student/Rules/yara` directory of this section's target, saved as `apt_apt17_mal_sep17_2.yar`.
+A good YARA rule to detect the aforementioned variation of ZoxPNG resides in the `/home/htb-student/Rules/yara` directory of this section's target, saved as `apt_apt17_mal_sep17_2.yar`.
 
-Code: yara
+Code: yara
 
 ```yara
 /*
@@ -635,43 +636,43 @@ rule APT17_Malware_Oct17_Gen {
 
 **YARA Rule Breakdown**:
 
-- **`Rule Imports`**: Modules are extensions to YARA's core functionality.
-    - `import "pe"`: By importing the [PE module](https://yara.readthedocs.io/en/stable/modules/pe.html) the YARA rule gains access to a set of specialized functions and structures that can inspect and analyze the details of `PE` files. This makes the rule more precise when it comes to detecting characteristics in Windows executables.
-- **`Rule Meta`**:
-    - `description`: Tells us the main purpose of the rule, which is to detect APT17 malware.
-    - `license`: Points to the location and version of the license governing the use of this YARA rule.
-    - `author`: The rule was written by Florian Roth from Nextron Systems.
-    - `reference`: Provides a link that goes into more detail about the malware or context of this rule.
-    - `date`: The date the rule was either created or last updated, in this case, 3rd October 2017.
-    - `hash1`, `hash2`, `hash3`: Hash values, probably of samples related to APT17, which the author used as references or as foundational data to create the rule.
-- **`Rule Body`**: The rule contains a series of strings, which are potential indicators of the APT17 malware. These strings are split into two categories
-    - `$x* strings`
-    - `$s* strings`
-- **`Rule Condition`**: This is the heart of the rule, where the actual detection logic resides.
-    - `uint16(0) == 0x5a4d`: Checks if the first two bytes of the file are `MZ`, which is the magic number for Windows executables. So, we're focusing on detecting Windows binaries.
-    - `filesize < 200KB`: Limits the rule to scan only small files, specifically those smaller than `200KB`.
-    - `pe.imphash() == "414bbd566b700ea021cfae3ad8f4d9b9"`: This checks the import hash (`imphash`) of the PE (Portable Executable) file. Imphashes are great for categorizing and clustering malware samples based on the libraries they import.
-    - `1 of ($x*)`: At least `one` of the `$x strings` (from the strings section) must be present in the file.
-    - `6 of them`: Requires that at least `six` of the strings (`from both $x and $s categories`) be found within the scanned file.
+* **`Rule Imports`**: Modules are extensions to YARA's core functionality.
+  * `import "pe"`: By importing the [PE module](https://yara.readthedocs.io/en/stable/modules/pe.html) the YARA rule gains access to a set of specialized functions and structures that can inspect and analyze the details of `PE` files. This makes the rule more precise when it comes to detecting characteristics in Windows executables.
+* **`Rule Meta`**:
+  * `description`: Tells us the main purpose of the rule, which is to detect APT17 malware.
+  * `license`: Points to the location and version of the license governing the use of this YARA rule.
+  * `author`: The rule was written by Florian Roth from Nextron Systems.
+  * `reference`: Provides a link that goes into more detail about the malware or context of this rule.
+  * `date`: The date the rule was either created or last updated, in this case, 3rd October 2017.
+  * `hash1`, `hash2`, `hash3`: Hash values, probably of samples related to APT17, which the author used as references or as foundational data to create the rule.
+* **`Rule Body`**: The rule contains a series of strings, which are potential indicators of the APT17 malware. These strings are split into two categories
+  * `$x* strings`
+  * `$s* strings`
+* **`Rule Condition`**: This is the heart of the rule, where the actual detection logic resides.
+  * `uint16(0) == 0x5a4d`: Checks if the first two bytes of the file are `MZ`, which is the magic number for Windows executables. So, we're focusing on detecting Windows binaries.
+  * `filesize < 200KB`: Limits the rule to scan only small files, specifically those smaller than `200KB`.
+  * `pe.imphash() == "414bbd566b700ea021cfae3ad8f4d9b9"`: This checks the import hash (`imphash`) of the PE (Portable Executable) file. Imphashes are great for categorizing and clustering malware samples based on the libraries they import.
+  * `1 of ($x*)`: At least `one` of the `$x strings` (from the strings section) must be present in the file.
+  * `6 of them`: Requires that at least `six` of the strings (`from both $x and $s categories`) be found within the scanned file.
 
-#### Example 2: Neuron Used by Turla
+**Example 2: Neuron Used by Turla**
 
-We want to develop a YARA rule to scan for instances of `Neuron Service` used by `Turla` based on:
+We want to develop a YARA rule to scan for instances of `Neuron Service` used by `Turla` based on:
 
-- A sample named `Microsoft.Exchange.Service.exe` residing in the `/home/htb-student/Samples/YARASigma` directory of this section's target
-- An [analysis report from the National Cyber Security Centre](https://www.ncsc.gov.uk/static-assets/documents/Turla%20group%20using%20Neuron%20and%20Nautilus%20tools%20alongside%20Snake%20malware_1.pdf)
+* A sample named `Microsoft.Exchange.Service.exe` residing in the `/home/htb-student/Samples/YARASigma` directory of this section's target
+* An [analysis report from the National Cyber Security Centre](https://www.ncsc.gov.uk/static-assets/documents/Turla%20group%20using%20Neuron%20and%20Nautilus%20tools%20alongside%20Snake%20malware_1.pdf)
 
 Since the report mentions that both the Neuron client and Neuron service are written using the .NET framework we will perform .NET "reversing" instead of string analysis.
 
-This can be done using the [monodis](https://www.mono-project.com/docs/tools+libraries/tools/monodis/) tool as follows.
+This can be done using the [monodis](https://www.mono-project.com/docs/tools+libraries/tools/monodis/) tool as follows.
 
-  Developing YARA Rules
+&#x20; Developing YARA Rules
 
 ```shell-session
 LeDaav@htb[/htb]$ monodis --output=code Microsoft.Exchange.Service.exe
 ```
 
-  Developing YARA Rules
+&#x20; Developing YARA Rules
 
 ```shell-session
 LeDaav@htb[/htb]$ cat code
@@ -718,13 +719,13 @@ LeDaav@htb[/htb]$ cat code
 
 By going through the above we can identify functions and classes within the .NET assembly.
 
-**Note**: A better reversing solution would be to load the .NET assembly (`Microsoft.Exchange.Service.exe`) into a .NET debugger and assembly editor like [dnSpy](https://github.com/dnSpy/dnSpy).
+**Note**: A better reversing solution would be to load the .NET assembly (`Microsoft.Exchange.Service.exe`) into a .NET debugger and assembly editor like [dnSpy](https://github.com/dnSpy/dnSpy).
 
-![Visual Studio interface showing decompiled C# code with highlighted method 'ExecCMD' in 'neuro_service' class, displaying parameters for executing commands.](https://academy.hackthebox.com/storage/modules/234/dnSpy.png)
+![Visual Studio interface showing decompiled C# code with highlighted method 'ExecCMD' in 'neuro\_service' class, displaying parameters for executing commands.](https://academy.hackthebox.com/storage/modules/234/dnSpy.png)
 
-A good YARA rule to identify instances of Neuron Service resides in the `/home/htb-student/Rules/yara` directory of this section's target, saved as `neuron_1.yar`.
+A good YARA rule to identify instances of Neuron Service resides in the `/home/htb-student/Rules/yara` directory of this section's target, saved as `neuron_1.yar`.
 
-Code: yara
+Code: yara
 
 ```yara
 rule neuron_functions_classes_and_vars {
@@ -758,28 +759,28 @@ rule neuron_functions_classes_and_vars {
 
 **YARA Rule Breakdown**:
 
-- **`Strings Section`**:
-    - `$class1 = "StorageUtils" ascii` to `$class8 = "W3WPDIAG" ascii`: These are eight ASCII strings corresponding to class names within the .NET assembly.
-    - `$func1 = "AddConfigAsString" ascii` to `$func7 = "FindSPath" ascii`: These seven ASCII strings represent class or function names within the .NET assembly.
-    - `$dotnetMagic = "BSJB" ascii`: This signature is present in the CLI (Common Language Infrastructure) header of .NET binaries, and its presence can be used to indicate the file is a .NET assembly. Specifically, it's in the Signature field of the CLI header, which follows the PE header and additional tables.
-- **`Condition Section`**:
-    - `uint16(0) == 0x5A4D`: This checks if the first two bytes at the start of the file are `MZ`, a magic number indicating a Windows Portable Executable (PE) format.
-    - `uint16(uint32(0x3c)) == 0x4550`: A two-step check. First, it reads a 32-bit (4 bytes) value from offset `0x3c` of the file. In PE files, this offset typically contains a pointer to the PE header. It then checks whether the two bytes at that pointer are `PE` (`0x4550`), indicating a valid PE header. This ensures the file is a legitimate PE format and not a corrupted or obfuscated one.
-    - `$dotnetMagic`: Verifies the presence of the `BSJB` string. This signature is present in the CLI (Common Language Infrastructure) header of .NET binaries, and its presence can be used to indicate the file is a .NET assembly.
-    - `6 of them`: This condition states that at least six of the previously defined strings (either classes or functions) must be found within the file. This ensures that even if a few signatures are absent or have been modified, the rule will still trigger if a substantial number remain.
+* **`Strings Section`**:
+  * `$class1 = "StorageUtils" ascii` to `$class8 = "W3WPDIAG" ascii`: These are eight ASCII strings corresponding to class names within the .NET assembly.
+  * `$func1 = "AddConfigAsString" ascii` to `$func7 = "FindSPath" ascii`: These seven ASCII strings represent class or function names within the .NET assembly.
+  * `$dotnetMagic = "BSJB" ascii`: This signature is present in the CLI (Common Language Infrastructure) header of .NET binaries, and its presence can be used to indicate the file is a .NET assembly. Specifically, it's in the Signature field of the CLI header, which follows the PE header and additional tables.
+* **`Condition Section`**:
+  * `uint16(0) == 0x5A4D`: This checks if the first two bytes at the start of the file are `MZ`, a magic number indicating a Windows Portable Executable (PE) format.
+  * `uint16(uint32(0x3c)) == 0x4550`: A two-step check. First, it reads a 32-bit (4 bytes) value from offset `0x3c` of the file. In PE files, this offset typically contains a pointer to the PE header. It then checks whether the two bytes at that pointer are `PE` (`0x4550`), indicating a valid PE header. This ensures the file is a legitimate PE format and not a corrupted or obfuscated one.
+  * `$dotnetMagic`: Verifies the presence of the `BSJB` string. This signature is present in the CLI (Common Language Infrastructure) header of .NET binaries, and its presence can be used to indicate the file is a .NET assembly.
+  * `6 of them`: This condition states that at least six of the previously defined strings (either classes or functions) must be found within the file. This ensures that even if a few signatures are absent or have been modified, the rule will still trigger if a substantial number remain.
 
-#### Example 3: Stonedrill Used in Shamoon 2.0 Attacks
+**Example 3: Stonedrill Used in Shamoon 2.0 Attacks**
 
-We want to develop a YARA rule to scan for instances of `Stonedrill` used in `Shamoon 2.0` attacks based on:
+We want to develop a YARA rule to scan for instances of `Stonedrill` used in `Shamoon 2.0` attacks based on:
 
-- A sample named `sham2.exe` residing in the `/home/htb-student/Samples/YARASigma` directory of this section's target
-- An [analysis report from Kaspersky](https://kas.pr/9s5A)
+* A sample named `sham2.exe` residing in the `/home/htb-student/Samples/YARASigma` directory of this section's target
+* An [analysis report from Kaspersky](https://kas.pr/9s5A)
 
-The report mentions: _... many samples had one additional `encrypted` resource with a specific, although non-unique name `101`._
+The report mentions: _... many samples had one additional `encrypted` resource with a specific, although non-unique name `101`._
 
-Encrypted/compressed/obfuscated in PE files usually means high [entropy](https://cocomelonc.github.io/malware/2022/11/05/malware-analysis-6.html). We can use the `entropy_pe_section.py` script that resides in the `/home/htb-student` directory of this section's target to check if our sample's resource section contains anything encrypted/compressed as follows.
+Encrypted/compressed/obfuscated in PE files usually means high [entropy](https://cocomelonc.github.io/malware/2022/11/05/malware-analysis-6.html). We can use the `entropy_pe_section.py` script that resides in the `/home/htb-student` directory of this section's target to check if our sample's resource section contains anything encrypted/compressed as follows.
 
-  Developing YARA Rules
+&#x20; Developing YARA Rules
 
 ```shell-session
 LeDaav@htb[/htb]$ python3 entropy_pe_section.py -f /home/htb-student/Samples/YARASigma/sham2.exe
@@ -804,11 +805,11 @@ LeDaav@htb[/htb]$ python3 entropy_pe_section.py -f /home/htb-student/Samples/YAR
         entropy: 7.976847940518103
 ```
 
-We notice that the resource section (`.rsrc`) has high entropy (`8.0` is the maximum entropy value). We can take for granted that the resource section contains something suspicious.
+We notice that the resource section (`.rsrc`) has high entropy (`8.0` is the maximum entropy value). We can take for granted that the resource section contains something suspicious.
 
-A good YARA rule to identify instances of Stonedrill resides in the `/home/htb-student/Rules/yara` directory of this section's target, saved as `stonedrill.yar`.
+A good YARA rule to identify instances of Stonedrill resides in the `/home/htb-student/Rules/yara` directory of this section's target, saved as `stonedrill.yar`.
 
-Code: yara
+Code: yara
 
 ```yara
 import "pe"
@@ -846,44 +847,44 @@ not ($mz in (pe.resources[i].offset..pe.resources[i].offset + pe.resources[i].le
 
 **YARA Rule Breakdown**:
 
-- **`Rule Imports`**: Modules are extensions to YARA's core functionality.
-    - `import "pe"`: By importing the [PE module](https://yara.readthedocs.io/en/stable/modules/pe.html) the YARA rule gains access to a set of specialized functions and structures that can inspect and analyze the details of `PE` files. This makes the rule more precise when it comes to detecting characteristics in Windows executables.
-    - `import "math"`: Imports the math module, providing mathematical functions like entropy calculations.
-- **`Rule Meta`**:
-    - `copyright = "Kaspersky Lab"`: The rule was authored or copyrighted by Kaspersky Lab.
-    - `description = "Generic detection for samples that enumerate files with encrypted resource called 101"`: The rule aims to detect samples that list files and have an encrypted resource with the identifier "101".
-    - `reference = "https://securelist.com/from-shamoon-to-stonedrill/77725/"`: Provides an URL for additional context or information about the rule.
-    - `hash`: Two hashes are given, probably as examples of known malicious files that match this rule.
-    - `version = "1.4"`: The version number of the YARA rule.
-- **`Strings Section`**:
-    - `$mz = "This program cannot be run in DOS mode."`: The ASCII string that typically appears in the DOS stub part of a PE file.
-    - `$a1 = "FindFirstFile", $a2 = "FindNextFile"`: Strings for Windows API functions used to enumerate files. The usage of `FindFirstFileW` and `FindNextFileW` API functions can be idenfitied through string analysis.
-    - `$a3 = "FindResource", $a4 = "LoadResource"`: As already mentioned Stonedrill samples feature encrypted resources. These strings can be found through string analysis and they are related to Windows API functions used for handling resources within the executable.
-- **`Rule Condition`**:
-    - `uint16(0) == 0x5A4D`: Checks if the first two bytes of the file are "MZ," indicating a Windows PE file.
-    - `all of them`: All the strings $a1, $a2, $a3, $a4 must be present in the file.
-    - `filesize < 700000`: The file size must be less than `700,000` bytes.
-    - `pe.number_of_sections > 4`: The PE file must have more than `four` sections.
-    - `pe.number_of_signatures == 0`: The file must not be digitally signed.
-    - `pe.number_of_resources > 1 and pe.number_of_resources < 15`: The file must contain more than one but fewer than `15` resources.
-    - `for any i in (0..pe.number_of_resources - 1): ( (math.entropy(pe.resources[i].offset, pe.resources[i].length) > 7.8) and pe.resources[i].id == 101 and pe.resources[i].length > 20000 and pe.resources[i].language == 0 and not ($mz in (pe.resources[i].offset..pe.resources[i].offset + pe.resources[i].length)))`: Go through each resource in the file and check if the entropy of the resource data is more than `7.8` and the resource identifier is `101` and the resource length is greater than `20,000` bytes and the language identifier of the resource is `0` and the DOS stub string is not present in the resource. It's not required for all resources to match the condition; only one resource meeting all the criteria is sufficient for the overall YARA rule to be a match.
+* **`Rule Imports`**: Modules are extensions to YARA's core functionality.
+  * `import "pe"`: By importing the [PE module](https://yara.readthedocs.io/en/stable/modules/pe.html) the YARA rule gains access to a set of specialized functions and structures that can inspect and analyze the details of `PE` files. This makes the rule more precise when it comes to detecting characteristics in Windows executables.
+  * `import "math"`: Imports the math module, providing mathematical functions like entropy calculations.
+* **`Rule Meta`**:
+  * `copyright = "Kaspersky Lab"`: The rule was authored or copyrighted by Kaspersky Lab.
+  * `description = "Generic detection for samples that enumerate files with encrypted resource called 101"`: The rule aims to detect samples that list files and have an encrypted resource with the identifier "101".
+  * `reference = "https://securelist.com/from-shamoon-to-stonedrill/77725/"`: Provides an URL for additional context or information about the rule.
+  * `hash`: Two hashes are given, probably as examples of known malicious files that match this rule.
+  * `version = "1.4"`: The version number of the YARA rule.
+* **`Strings Section`**:
+  * `$mz = "This program cannot be run in DOS mode."`: The ASCII string that typically appears in the DOS stub part of a PE file.
+  * `$a1 = "FindFirstFile", $a2 = "FindNextFile"`: Strings for Windows API functions used to enumerate files. The usage of `FindFirstFileW` and `FindNextFileW` API functions can be idenfitied through string analysis.
+  * `$a3 = "FindResource", $a4 = "LoadResource"`: As already mentioned Stonedrill samples feature encrypted resources. These strings can be found through string analysis and they are related to Windows API functions used for handling resources within the executable.
+* **`Rule Condition`**:
+  * `uint16(0) == 0x5A4D`: Checks if the first two bytes of the file are "MZ," indicating a Windows PE file.
+  * `all of them`: All the strings $a1, $a2, $a3, $a4 must be present in the file.
+  * `filesize < 700000`: The file size must be less than `700,000` bytes.
+  * `pe.number_of_sections > 4`: The PE file must have more than `four` sections.
+  * `pe.number_of_signatures == 0`: The file must not be digitally signed.
+  * `pe.number_of_resources > 1 and pe.number_of_resources < 15`: The file must contain more than one but fewer than `15` resources.
+  * `for any i in (0..pe.number_of_resources - 1): ( (math.entropy(pe.resources[i].offset, pe.resources[i].length) > 7.8) and pe.resources[i].id == 101 and pe.resources[i].length > 20000 and pe.resources[i].language == 0 and not ($mz in (pe.resources[i].offset..pe.resources[i].offset + pe.resources[i].length)))`: Go through each resource in the file and check if the entropy of the resource data is more than `7.8` and the resource identifier is `101` and the resource length is greater than `20,000` bytes and the language identifier of the resource is `0` and the DOS stub string is not present in the resource. It's not required for all resources to match the condition; only one resource meeting all the criteria is sufficient for the overall YARA rule to be a match.
 
-## YARA Rule Development Resources
+### YARA Rule Development Resources
 
-As you can imagine, the best YARA rule development resource is the official documentation, which can be found at the following [link](https://yara.readthedocs.io/en/latest/writingrules.html).
+As you can imagine, the best YARA rule development resource is the official documentation, which can be found at the following [link](https://yara.readthedocs.io/en/latest/writingrules.html).
 
-The next best resource on effective YARA rule developement comes from [Kaspersky](https://www.slideshare.net/KasperskyLabGlobal/upping-the-apt-hunting-game-learn-the-best-yara-practices-from-kaspersky).
+The next best resource on effective YARA rule developement comes from [Kaspersky](https://www.slideshare.net/KasperskyLabGlobal/upping-the-apt-hunting-game-learn-the-best-yara-practices-from-kaspersky).
 
-Below are some blog posts that offer a more detailed explanation on how to use `yarGen` for YARA rule development:
+Below are some blog posts that offer a more detailed explanation on how to use `yarGen` for YARA rule development:
 
-- [How to Write Simple but Sound Yara Rules - Part 1](https://www.nextron-systems.com/2015/02/16/write-simple-sound-yara-rules/)
-- [How to Write Simple but Sound Yara Rules - Part 2](https://www.nextron-systems.com/2015/10/17/how-to-write-simple-but-sound-yara-rules-part-2/)
-- [How to Write Simple but Sound Yara Rules - Part 3](https://www.nextron-systems.com/2016/04/15/how-to-write-simple-but-sound-yara-rules-part-3/)
+* [How to Write Simple but Sound Yara Rules - Part 1](https://www.nextron-systems.com/2015/02/16/write-simple-sound-yara-rules/)
+* [How to Write Simple but Sound Yara Rules - Part 2](https://www.nextron-systems.com/2015/10/17/how-to-write-simple-but-sound-yara-rules-part-2/)
+* [How to Write Simple but Sound Yara Rules - Part 3](https://www.nextron-systems.com/2016/04/15/how-to-write-simple-but-sound-yara-rules-part-3/)
 
-`yarGen` is a great tool to develop some good yara rules by extracting unique patterns. Once the rule is developed with the help of yarGen, we definitely need to review and add/remove some more patterns to make it an effective rule.
+`yarGen` is a great tool to develop some good yara rules by extracting unique patterns. Once the rule is developed with the help of yarGen, we definitely need to review and add/remove some more patterns to make it an effective rule.
 
-In [this](https://cyb3rops.medium.com/how-to-post-process-yara-rules-generated-by-yargen-121d29322282) blogpost, Florian Roth has mentioned that the main purpose of yarGen is to develop the best possible rules for manual post-processing which might sound like a tedious task, but the combination of clever automatic preselection and a critical human analyst beats both the fully manual and fully automatic generation process.
+In [this](https://cyb3rops.medium.com/how-to-post-process-yara-rules-generated-by-yargen-121d29322282) blogpost, Florian Roth has mentioned that the main purpose of yarGen is to develop the best possible rules for manual post-processing which might sound like a tedious task, but the combination of clever automatic preselection and a critical human analyst beats both the fully manual and fully automatic generation process.
 
----
+***
 
 Continuing forward, we'll dig deeper into using YARA, expanding our hunt for threats from our filesystem to memory and also within memory images.

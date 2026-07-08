@@ -1,9 +1,10 @@
+# Filter Contents
 
 In the previous section, we explored how to use redirection to send the output of one program into another for further processing. Now, let's talk about reading files directly from the command line, without needing to open a text editor.
 
-There are two powerful tools for this - `more` and `less`. These are known as pagers, and they allow you to view the contents of a file interactively, one screen at a time. While both tools serve a similar purpose, they have some differences in functionality, which we'll touch on later.
+There are two powerful tools for this - `more` and `less`. These are known as pagers, and they allow you to view the contents of a file interactively, one screen at a time. While both tools serve a similar purpose, they have some differences in functionality, which we'll touch on later.
 
-Using `more` and `less`, you can easily scroll through large files, search for text, and navigate forward or backward without modifying the file itself. This is especially useful when you're working with large logs or text files that don't fit neatly into one screen.
+Using `more` and `less`, you can easily scroll through large files, search for text, and navigate forward or backward without modifying the file itself. This is especially useful when you're working with large logs or text files that don't fit neatly into one screen.
 
 The goal for this section is to learn how to filter content and handle the redirected output from previous commands. But before we dive into filtering, we need to become familiar with some essential tools and commands that are specifically designed to make filtering more efficient and powerful.
 
@@ -11,21 +12,21 @@ Before we start filtering the output of commands, let’s explore a few foundati
 
 Let's look at some examples to understand how these tools work in practice.
 
----
+***
 
-## More
+### More
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 LeDaav@htb[/htb]$ cat /etc/passwd | more
 ```
 
-The `/etc/passwd` file in Linux is like a phone directory for users on the system. It includes details such as the username, user ID, group ID, home directory, and the default shell they use.
+The `/etc/passwd` file in Linux is like a phone directory for users on the system. It includes details such as the username, user ID, group ID, home directory, and the default shell they use.
 
-After we read the content using `cat` and redirected it to `more`, the already mentioned `pager` opens, and we will automatically start at the beginning of the file.
+After we read the content using `cat` and redirected it to `more`, the already mentioned `pager` opens, and we will automatically start at the beginning of the file.
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 root:x:0:0:root:/root:/bin/bash
@@ -37,23 +38,23 @@ sync:x:4:65534:sync:/bin:/bin/sync
 --More--
 ```
 
-With the `[Q]` key, we can leave this `pager`. We will notice that the output remains in the terminal.
+With the `[Q]` key, we can leave this `pager`. We will notice that the output remains in the terminal.
 
----
+***
 
-## Less
+### Less
 
-If we now take a look at the tool `less`, we will notice on the man page that it contains many more features than `more`.
+If we now take a look at the tool `less`, we will notice on the man page that it contains many more features than `more`.
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 LeDaav@htb[/htb]$ less /etc/passwd
 ```
 
-The presentation is almost the same as with `more`.
+The presentation is almost the same as with `more`.
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 root:x:0:0:root:/root:/bin/bash
@@ -65,15 +66,15 @@ sync:x:4:65534:sync:/bin:/bin/sync
 :
 ```
 
-When closing `less` with the `[Q]` key, we will notice that the output we have seen, unlike `more`, does not remain in the terminal.
+When closing `less` with the `[Q]` key, we will notice that the output we have seen, unlike `more`, does not remain in the terminal.
 
----
+***
 
-## Head
+### Head
 
-Sometimes we will only be interested in specific issues either at the beginning of the file or the end. If we only want to get the `first` lines of the file, we can use the tool `head`. By default, `head` prints the first ten lines of the given file or input, if not specified otherwise.
+Sometimes we will only be interested in specific issues either at the beginning of the file or the end. If we only want to get the `first` lines of the file, we can use the tool `head`. By default, `head` prints the first ten lines of the given file or input, if not specified otherwise.
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 LeDaav@htb[/htb]$ head /etc/passwd
@@ -90,13 +91,13 @@ mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
 news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
 ```
 
----
+***
 
-## Tail
+### Tail
 
-If we only want to see the last parts of a file or results, we can use the counterpart of `head` called `tail`, which returns the `last` ten lines.
+If we only want to see the last parts of a file or results, we can use the counterpart of `head` called `tail`, which returns the `last` ten lines.
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 LeDaav@htb[/htb]$ tail /etc/passwd
@@ -115,13 +116,13 @@ user6:x:1000:1000:,,,:/home/user6:/bin/bash
 
 It would be highly beneficial to explore the available options these tools offer and experiment with them.
 
----
+***
 
-## Sort
+### Sort
 
-Depending on which results and files are dealt with, they are rarely sorted. Often it is necessary to sort the desired results alphabetically or numerically to get a better overview. For this, we can use a tool called `sort`.
+Depending on which results and files are dealt with, they are rarely sorted. Often it is necessary to sort the desired results alphabetically or numerically to get a better overview. For this, we can use a tool called `sort`.
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 LeDaav@htb[/htb]$ cat /etc/passwd | sort
@@ -143,13 +144,13 @@ htb-student:x:1002:1002::/home/htb-student:/bin/bash
 
 As we can see now, the output no longer starts with root but is now sorted alphabetically.
 
----
+***
 
-## Grep
+### Grep
 
-In many cases, we will need to search for specific results that match patterns we define. One of the most commonly used tools for this purpose is grep, which provides a wide range of powerful features for pattern searching. For instance, we can use grep to search for users who have their default shell set to `/bin/bash`.
+In many cases, we will need to search for specific results that match patterns we define. One of the most commonly used tools for this purpose is grep, which provides a wide range of powerful features for pattern searching. For instance, we can use grep to search for users who have their default shell set to `/bin/bash`.
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 LeDaav@htb[/htb]$ cat /etc/passwd | grep "/bin/bash"
@@ -160,9 +161,9 @@ cry0l1t3:x:1001:1001::/home/cry0l1t3:/bin/bash
 htb-student:x:1002:1002::/home/htb-student:/bin/bash
 ```
 
-This is just one example of how grep can be applied to efficiently filter data based on predefined patterns. Another possibility is to exclude specific results. For this, the option "`-v`" is used with `grep`. In the next example, we exclude all users who have disabled the standard shell with the name "`/bin/false`" or "`/usr/bin/nologin`".
+This is just one example of how grep can be applied to efficiently filter data based on predefined patterns. Another possibility is to exclude specific results. For this, the option "`-v`" is used with `grep`. In the next example, we exclude all users who have disabled the standard shell with the name "`/bin/false`" or "`/usr/bin/nologin`".
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 LeDaav@htb[/htb]$ cat /etc/passwd | grep -v "false\|nologin"
@@ -173,13 +174,13 @@ postgres:x:111:117:PostgreSQL administrator,,,:/var/lib/postgresql:/bin/bash
 user6:x:1000:1000:,,,:/home/user6:/bin/bash
 ```
 
----
+***
 
-## Cut
+### Cut
 
-Specific results with different characters may be separated as delimiters. Here it is handy to know how to remove specific delimiters and show the words on a line in a specified position. One of the tools that can be used for this is `cut`. Therefore we use the option "`-d`" and set the delimiter to the colon character (`:`) and define with the option "`-f`" the position in the line we want to output.
+Specific results with different characters may be separated as delimiters. Here it is handy to know how to remove specific delimiters and show the words on a line in a specified position. One of the tools that can be used for this is `cut`. Therefore we use the option "`-d`" and set the delimiter to the colon character (`:`) and define with the option "`-f`" the position in the line we want to output.
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 LeDaav@htb[/htb]$ cat /etc/passwd | grep -v "false\|nologin" | cut -d":" -f1
@@ -192,13 +193,13 @@ cry0l1t3
 htb-student
 ```
 
----
+***
 
-## Tr
+### Tr
 
-Another possibility to replace certain characters from a line with characters defined by us is the tool `tr`. As the first option, we define which character we want to replace, and as a second option, we define the character we want to replace it with. In the next example, we replace the colon character with space.
+Another possibility to replace certain characters from a line with characters defined by us is the tool `tr`. As the first option, we define which character we want to replace, and as a second option, we define the character we want to replace it with. In the next example, we replace the colon character with space.
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 LeDaav@htb[/htb]$ cat /etc/passwd | grep -v "false\|nologin" | tr ":" " "
@@ -211,13 +212,13 @@ cry0l1t3 x 1001 1001  /home/cry0l1t3 /bin/bash
 htb-student x 1002 1002  /home/htb-student /bin/bash
 ```
 
----
+***
 
-## Column
+### Column
 
-Since search results can often have an unclear representation, the tool `column` is well suited to display such results in tabular form using the "`-t`."
+Since search results can often have an unclear representation, the tool `column` is well suited to display such results in tabular form using the "`-t`."
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 LeDaav@htb[/htb]$ cat /etc/passwd | grep -v "false\|nologin" | tr ":" " " | column -t
@@ -230,13 +231,13 @@ cry0l1t3     x  1001  1001   /home/cry0l1t3     /bin/bash
 htb-student  x  1002  1002   /home/htb-student  /bin/bash
 ```
 
----
+***
 
-## Awk
+### Awk
 
-As we may have noticed, the line for the user "`postgres`" has one column too many. To keep it as simple as possible to sort out such results, the (`g`)`awk` programming is beneficial, which allows us to display the first (`$1`) and last (`$NF`) result of the line.
+As we may have noticed, the line for the user "`postgres`" has one column too many. To keep it as simple as possible to sort out such results, the (`g`)`awk` programming is beneficial, which allows us to display the first (`$1`) and last (`$NF`) result of the line.
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 LeDaav@htb[/htb]$ cat /etc/passwd | grep -v "false\|nologin" | tr ":" " " | awk '{print $1, $NF}'
@@ -249,15 +250,15 @@ cry0l1t3 /bin/bash
 htb-student /bin/bash
 ```
 
----
+***
 
-## Sed
+### Sed
 
-There will come moments when we want to change specific names in the whole file or standard input. One of the tools we can use for this is the stream editor called `sed`. One of the most common uses of this is substituting text. Here, `sed` looks for patterns we have defined in the form of regular expressions (regex) and replaces them with another pattern that we have also defined. Let us stick to the last results and say we want to replace the word "`bin`" with "`HTB`."
+There will come moments when we want to change specific names in the whole file or standard input. One of the tools we can use for this is the stream editor called `sed`. One of the most common uses of this is substituting text. Here, `sed` looks for patterns we have defined in the form of regular expressions (regex) and replaces them with another pattern that we have also defined. Let us stick to the last results and say we want to replace the word "`bin`" with "`HTB`."
 
 The "`s`" flag at the beginning stands for the substitute command. Then we specify the pattern we want to replace. After the slash (`/`), we enter the pattern we want to use as a replacement in the third position. Finally, we use the "`g`" flag, which stands for replacing all matches.
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 LeDaav@htb[/htb]$ cat /etc/passwd | grep -v "false\|nologin" | tr ":" " " | awk '{print $1, $NF}' | sed 's/bin/HTB/g'
@@ -270,13 +271,13 @@ cry0l1t3 /HTB/bash
 htb-student /HTB/bash
 ```
 
----
+***
 
-## Wc
+### Wc
 
-Last but not least, it will often be useful to know how many successful matches we have. To avoid counting the lines or characters manually, we can use the tool `wc`. With the "`-l`" option, we specify that only the lines are counted.
+Last but not least, it will often be useful to know how many successful matches we have. To avoid counting the lines or characters manually, we can use the tool `wc`. With the "`-l`" option, we specify that only the lines are counted.
 
-  Filter Contents
+&#x20; Filter Contents
 
 ```shell-session
 LeDaav@htb[/htb]$ cat /etc/passwd | grep -v "false\|nologin" | tr ":" " " | awk '{print $1, $NF}' | wc -l
@@ -284,23 +285,23 @@ LeDaav@htb[/htb]$ cat /etc/passwd | grep -v "false\|nologin" | tr ":" " " | awk 
 6
 ```
 
----
+***
 
-## Practice
+### Practice
 
 Keep in mind that there are numerous other tools available that you can utilize and incorporate throughout your journey. It’s highly recommended to explore alternative tools for specific tasks to broaden your skill set, as you may discover options that better suit your personal preferences and workflows. There are no rigid limitations, so feel free to explore different possibilities and take advantage of the wealth of resources shared within the community.
 
-It may be a bit overwhelming at first to deal with so many different tools and their functions if we are not familiar with them. Take your time and experiment with the tools. Have a look at the man pages (`man <tool>`) or call the help for it (`<tool> -h` / `<tool> --help`). The best way to become familiar with all the tools is to practice. Try to use them as often as possible, and we will be able to filter many things intuitively after a short time.
+It may be a bit overwhelming at first to deal with so many different tools and their functions if we are not familiar with them. Take your time and experiment with the tools. Have a look at the man pages (`man <tool>`) or call the help for it (`<tool> -h` / `<tool> --help`). The best way to become familiar with all the tools is to practice. Try to use them as often as possible, and we will be able to filter many things intuitively after a short time.
 
-Here are a few optional exercises we can use to improve our filtering skills and get more familiar with the terminal and the commands. The file we will need to work with is the `/etc/passwd` file on our `target` and we can use any shown command above. Our goal is to filter and display only specific contents. Read the file and filter its contents in such a way that we see only:
+Here are a few optional exercises we can use to improve our filtering skills and get more familiar with the terminal and the commands. The file we will need to work with is the `/etc/passwd` file on our `target` and we can use any shown command above. Our goal is to filter and display only specific contents. Read the file and filter its contents in such a way that we see only:
 
-|||
-|---|---|
-|1.|A line with the username `cry0l1t3`.|
-|2.|The usernames.|
-|3.|The username `cry0l1t3` and his UID.|
-|4.|The username `cry0l1t3` and his UID separated by a comma (`,`).|
-|5.|The username `cry0l1t3`, his UID, and the set shell separated by a comma (`,`).|
-|6.|All usernames with their UID and set shells separated by a comma (`,`).|
-|7.|All usernames with their UID and set shells separated by a comma (`,`) and exclude the ones that contain `nologin` or `false`.|
-|8.|All usernames with their UID and set shells separated by a comma (`,`) and exclude the ones that contain `nologin` and count all lines of the filtered output.|
+|    |                                                                                                                                                                |
+| -- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. | A line with the username `cry0l1t3`.                                                                                                                           |
+| 2. | The usernames.                                                                                                                                                 |
+| 3. | The username `cry0l1t3` and his UID.                                                                                                                           |
+| 4. | The username `cry0l1t3` and his UID separated by a comma (`,`).                                                                                                |
+| 5. | The username `cry0l1t3`, his UID, and the set shell separated by a comma (`,`).                                                                                |
+| 6. | All usernames with their UID and set shells separated by a comma (`,`).                                                                                        |
+| 7. | All usernames with their UID and set shells separated by a comma (`,`) and exclude the ones that contain `nologin` or `false`.                                 |
+| 8. | All usernames with their UID and set shells separated by a comma (`,`) and exclude the ones that contain `nologin` and count all lines of the filtered output. |
