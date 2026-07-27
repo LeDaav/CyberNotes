@@ -97,5 +97,3 @@ ws01\htb-student
 - They rely on the target initiating outbound connections.
 - Disabling antivirus temporarily may be necessary to execute payloads.
 - Always practice in controlled environments and respect legal boundaries.
-
-Tokens : 47023 (e
