@@ -81,8 +81,6 @@ powershell -nop -c "<reverse shell script>"
 - The attacker's netcat session receives a prompt:
 
 ```bash
-bash
-
 PS C:\Users\htb-student> whoami
 ws01\htb-student
 ```
