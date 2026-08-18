@@ -1,2 +1,0 @@
-# Security Monitoring & SIEM Fundamentals
-

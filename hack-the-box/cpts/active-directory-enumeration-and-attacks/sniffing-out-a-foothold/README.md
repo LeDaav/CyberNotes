@@ -1,2 +1,0 @@
-# Sniffing out a Foothold
-
